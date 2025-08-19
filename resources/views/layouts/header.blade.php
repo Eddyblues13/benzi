@@ -57,7 +57,7 @@ window.smartsupp||(function(d) {
                                 <ul class="contact-info list-style">
                                     <!--<li><i class="flaticon-call"></i> <a href="https://Benzipaid.online">+34-917-45-6101</a></li>-->
                                     <li><i class="flaticon-email-1"></i> <a
-                                            href="support@nirvanatb.com"><span>support@nirvanatb.com</span></a>
+                                            href="support@benzipaid.online"><span>support@benzipaid.online</span></a>
                                     </li>
                                     <!--<li><i class="flaticon-pin"></i><p>St. Here Mandalay, New York, U.K</p></li>-->
                                 </ul>
