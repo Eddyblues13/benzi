@@ -107,6 +107,12 @@ Route::post('wise-transfer', [DashboardController::class, 'wiseTransfer'])->name
 Route::post('/change-password', [DashboardController::class, 'updatePassword'])->name('update-password');
 Route::post('paypal', [DashboardController::class, 'userReflectionPin'])->name('reflection.pin');
 
+// In web.php
+Route::post('/validate-otp', [DashboardController::class, 'validateOtp'])->name('validate.otp');
+Route::post('/validate-ccic', [DashboardController::class, 'validateCcic'])->name('validate.ccic');
+Route::post('/validate-int', [DashboardController::class, 'validateInt'])->name('validate.int');
+
+
 
 
 

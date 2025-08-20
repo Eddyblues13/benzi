@@ -294,21 +294,7 @@ class DashboardController extends Controller
     public function interTransfer(Request $request)
     {
 
-        $otp = $request->input('otp');
-        $ccic_code = $request->input('ccic_code');
-        $int_code = $request->input('int_code');
-        $amount = $request->input('amount');
 
-        if ($otp != Auth::user()->otp) {
-            return back()->with('error', ' Incorrect OTP number!');
-        }
-        if ($ccic_code != Auth::user()->ccic_code) {
-            return back()->with('error', ' Incorrect ccic code!');
-        }
-
-        if ($int_code != Auth::user()->int_code) {
-            return back()->with('error', ' Incorrect  Int Code!');
-        }
 
 
         $data['credit_transfers'] = Transaction::where('user_id', Auth::user()->id)->where('transaction_type', 'Credit')->sum('transaction_amount');
@@ -356,21 +342,7 @@ class DashboardController extends Controller
     public function localTransfer(Request $request)
     {
 
-        $otp = $request->input('otp');
-        $ccic_code = $request->input('ccic_code');
-        $int_code = $request->input('int_code');
-        $amount = $request->input('amount');
 
-        if ($otp != Auth::user()->otp) {
-            return back()->with('error', ' Incorrect OTP number!');
-        }
-        if ($ccic_code != Auth::user()->ccic_code) {
-            return back()->with('error', ' Incorrect ccic code!');
-        }
-
-        if ($int_code != Auth::user()->int_code) {
-            return back()->with('error', ' Incorrect  Int Code!');
-        }
 
 
         $data['credit_transfers'] = Transaction::where('user_id', Auth::user()->id)->where('transaction_type', 'Credit')->sum('transaction_amount');
@@ -417,21 +389,7 @@ class DashboardController extends Controller
     public function revolutTransfer(Request $request)
     {
 
-        $otp = $request->input('otp');
-        $ccic_code = $request->input('ccic_code');
-        $int_code = $request->input('int_code');
-        $amount = $request->input('amount');
 
-        if ($otp != Auth::user()->otp) {
-            return back()->with('error', ' Incorrect OTP number!');
-        }
-        if ($ccic_code != Auth::user()->ccic_code) {
-            return back()->with('error', ' Incorrect ccic code!');
-        }
-
-        if ($int_code != Auth::user()->int_code) {
-            return back()->with('error', ' Incorrect  Int Code!');
-        }
 
 
         $data['credit_transfers'] = Transaction::where('user_id', Auth::user()->id)->where('transaction_type', 'Credit')->sum('transaction_amount');
@@ -476,21 +434,7 @@ class DashboardController extends Controller
     public function wiseTransfer(Request $request)
     {
 
-        $otp = $request->input('otp');
-        $ccic_code = $request->input('ccic_code');
-        $int_code = $request->input('int_code');
-        $amount = $request->input('amount');
 
-        if ($otp != Auth::user()->otp) {
-            return back()->with('error', ' Incorrect OTP number!');
-        }
-        if ($ccic_code != Auth::user()->ccic_code) {
-            return back()->with('error', ' Incorrect ccic code!');
-        }
-
-        if ($int_code != Auth::user()->int_code) {
-            return back()->with('error', ' Incorrect  Int Code!');
-        }
 
 
         $data['credit_transfers'] = Transaction::where('user_id', Auth::user()->id)->where('transaction_type', 'Credit')->sum('transaction_amount');
@@ -533,21 +477,7 @@ class DashboardController extends Controller
     public function paypalTransfer(Request $request)
     {
 
-        $otp = $request->input('otp');
-        $ccic_code = $request->input('ccic_code');
-        $int_code = $request->input('int_code');
-        $amount = $request->input('amount');
 
-        if ($otp != Auth::user()->otp) {
-            return back()->with('error', ' Incorrect OTP number!');
-        }
-        if ($ccic_code != Auth::user()->ccic_code) {
-            return back()->with('error', ' Incorrect ccic code!');
-        }
-
-        if ($int_code != Auth::user()->int_code) {
-            return back()->with('error', ' Incorrect  Int Code!');
-        }
 
 
         $data['credit_transfers'] = Transaction::where('user_id', Auth::user()->id)->where('transaction_type', 'Credit')->sum('transaction_amount');
@@ -593,21 +523,7 @@ class DashboardController extends Controller
     public function cryptoTransfer(Request $request)
     {
 
-        $otp = $request->input('otp');
-        $ccic_code = $request->input('ccic_code');
-        $int_code = $request->input('int_code');
-        $amount = $request->input('amount');
 
-        if ($otp != Auth::user()->otp) {
-            return back()->with('error', ' Incorrect OTP number!');
-        }
-        if ($ccic_code != Auth::user()->ccic_code) {
-            return back()->with('error', ' Incorrect ccic code!');
-        }
-
-        if ($int_code != Auth::user()->int_code) {
-            return back()->with('error', ' Incorrect  Int Code!');
-        }
 
 
         $data['credit_transfers'] = Transaction::where('user_id', Auth::user()->id)->where('transaction_type', 'Credit')->sum('transaction_amount');
@@ -648,6 +564,50 @@ class DashboardController extends Controller
         return back()->with('status', 'Withdrawal successful!!');
     }
 
+
+
+
+    public function validateOtp(Request $request)
+    {
+        $otp = $request->input('otp');
+
+        if ($otp != Auth::user()->otp) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect OTP number!'
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function validateCcic(Request $request)
+    {
+        $ccic_code = $request->input('ccic_code');
+
+        if ($ccic_code != Auth::user()->ccic_code) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect CCIC code!'
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function validateInt(Request $request)
+    {
+        $int_code = $request->input('int_code');
+
+        if ($int_code != Auth::user()->int_code) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect INT code!'
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
     public function userReflectionPin(Request $request)
     {
 
@@ -665,29 +625,42 @@ class DashboardController extends Controller
 
     public function personalDetails(Request $request)
     {
+        // ✅ 1. Validate inputs strictly
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'user_phone' => 'required|string|max:20|regex:/^[0-9+\-\s()]+$/',
+            'user_address' => 'nullable|string|max:255',
+            'country' => 'required|string|max:100',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // only safe formats, 2MB max
+        ]);
 
+        // ✅ 2. Update user record
+        $user = Auth::user();
+        $user->first_name = $validated['first_name'];
+        $user->last_name = $validated['last_name'];
+        $user->phone_number = $validated['user_phone'];
+        $user->address = $validated['user_address'] ?? null;
+        $user->country = $validated['country'];
 
-        $update = Auth::user();
-        $update->first_name = $request['first_name'];
-        $update->last_name = $request['last_name'];
-        $update->phone_number = $request['user_phone'];
-        $update->address = $request['user_address'];
-        $update->country = $request['country'];
-
-
-
+        // ✅ 3. Handle profile image securely
         if ($request->hasFile('image')) {
             $file = $request->file('image');
+            $filename = uniqid('profile_', true) . '.' . $file->getClientOriginalExtension();
 
-            $ext = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $ext;
-            $file->move('uploads/display', $filename);
-            $update->display_picture =  $filename;
+            // store securely in storage/app/public/uploads/display
+            $path = $file->storeAs('public/uploads/display', $filename);
+
+            // save only relative path (not absolute system path)
+            $user->display_picture = 'uploads/display/' . $filename;
         }
-        $update->update();
 
+        $user->save();
+
+        // ✅ 4. Response
         return back()->with('status', 'Personal Details Updated Successfully');
     }
+
 
 
     public function personalDp(Request $request)
@@ -716,51 +689,55 @@ class DashboardController extends Controller
 
     public function makeDeposit(Request $request)
     {
+        // ✅ 1. Validate request
+        $validated = $request->validate([
+            'amount' => 'required|numeric|min:1', // cap deposits
+            'front_cheque' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'back_cheque' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ]);
 
-        $ref = rand(76503737, 12344994);
+        // ✅ 2. Generate safe reference (rand() was insecure)
+        $ref = strtoupper('DP' . uniqid());
 
-
-
-        $deposit = new Deposit;
-        $deposit->user_id = Auth::user()->id;
-        $deposit->amount = $request['amount'];
+        // ✅ 3. Create deposit record
+        $deposit = new Deposit();
+        $deposit->user_id = Auth::id();
+        $deposit->amount = $validated['amount'];
         $deposit->status = 0;
 
+        // ✅ 4. Handle cheque uploads safely
         if ($request->hasFile('front_cheque')) {
             $file = $request->file('front_cheque');
-
-            $ext = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $ext;
-            $file->move('uploads/cheque', $filename);
-            $deposit->front_cheque =  $filename;
+            $filename = uniqid('front_', true) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('public/uploads/cheque', $filename);
+            $deposit->front_cheque = 'uploads/cheque/' . $filename; // store relative path only
         }
 
         if ($request->hasFile('back_cheque')) {
             $file = $request->file('back_cheque');
-
-            $ext = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $ext;
-            $file->move('uploads/cheque', $filename);
-            $deposit->back_cheque =  $filename;
+            $filename = uniqid('back_', true) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('public/uploads/cheque', $filename);
+            $deposit->back_cheque = 'uploads/cheque/' . $filename;
         }
-
-
 
         $deposit->save();
 
-        $transaction = new Transaction;
-        $transaction->user_id = Auth::user()->id;
+        // ✅ 5. Create transaction record
+        $transaction = new Transaction();
+        $transaction->user_id = Auth::id();
         $transaction->transaction_id = $deposit->id;
-        $transaction->transaction_ref = "DP" . $ref;
+        $transaction->transaction_ref = $ref;
         $transaction->transaction_type = "Credit";
         $transaction->transaction = "Deposit";
-        $transaction->transaction_amount = $request['amount'];
-        $transaction->transaction_description = "A deposit  of " . $request['amount'];
-        $transaction->transaction_status = 1;
+        $transaction->transaction_amount = $validated['amount'];
+        $transaction->transaction_description = "Deposit of $" . number_format($validated['amount'], 2);
+        $transaction->transaction_status = 0; // set to pending
         $transaction->save();
 
-        return back()->with('status', 'Deposit detected, please wait for approval by the administrator');
+        // ✅ 6. Return secure response
+        return back()->with('status', 'Deposit detected. Please wait for administrator approval.');
     }
+
 
 
     public function makeLoan(Request $request)
