@@ -294,6 +294,7 @@ class DashboardController extends Controller
     public function interTransfer(Request $request)
     {
 
+        $amount = $request->input('amount');
 
 
 
@@ -342,6 +343,7 @@ class DashboardController extends Controller
     public function localTransfer(Request $request)
     {
 
+        $amount = $request->input('amount');
 
 
 
@@ -389,6 +391,7 @@ class DashboardController extends Controller
     public function revolutTransfer(Request $request)
     {
 
+        $amount = $request->input('amount');
 
 
 
@@ -434,6 +437,7 @@ class DashboardController extends Controller
     public function wiseTransfer(Request $request)
     {
 
+        $amount = $request->input('amount');
 
 
 
@@ -477,6 +481,7 @@ class DashboardController extends Controller
     public function paypalTransfer(Request $request)
     {
 
+        $amount = $request->input('amount');
 
 
 
@@ -523,6 +528,7 @@ class DashboardController extends Controller
     public function cryptoTransfer(Request $request)
     {
 
+        $amount = $request->input('amount');
 
 
 
@@ -619,7 +625,7 @@ class DashboardController extends Controller
         }
 
 
-        return view('dashboard.activate_account', $data);
+        return view('dashboard.activate_account');
     }
 
 
