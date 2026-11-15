@@ -3,6 +3,7 @@
 <div class="content-body">
             <!-- row -->
             <div class="container-fluid">
+                @include('dashboard.partials.alerts')
                 <div class="form-head mb-4">
                     <h2 class="text-black font-w600 mb-0">Fund Account</h2>
                                     </div>
@@ -66,7 +67,40 @@
                                             <!--    </div>-->
                                             <!--</div>-->
 
-                                            <div class="col-xl-12 mb-3 col-xxl-12 col-sm-12">
+                                            <div class="col-xl-6 mb-3 col-xxl-6 col-sm-12">
+                                                <a class="btn btn-primary rounded d-block btn-lg" data-bs-toggle="modal" data-bs-target="#chequeDeposit">+Cheque Deposit</a>
+                                                <div class="modal fade" id="chequeDeposit">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <form class="modal-content" action="{{ route('make.deposit') }}" method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Cheque Deposit</h5>
+                                                                <button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Amount ({{ Auth::user()->currency }})</label>
+                                                                    <input type="number" step="0.01" min="1" name="amount" class="form-control" value="{{ old('amount') }}" required>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Front of cheque (JPG, PNG or PDF, max 4MB)</label>
+                                                                    <input type="file" name="front_cheque" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Back of cheque (JPG, PNG or PDF, max 4MB)</label>
+                                                                    <input type="file" name="back_cheque" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                                                </div>
+                                                                <small class="text-muted">Deposits reflect in your balance once approved by an administrator.</small>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Submit Deposit</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6 mb-3 col-xxl-6 col-sm-12">
                                                 <a class="btn btn-outline-primary rounded d-block btn-lg" data-bs-toggle="modal" data-bs-target="#fiat">+Fiat Deposit</a>
                                                  <div class="modal fade" id="fiat">
                                                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -101,7 +135,7 @@
                             <div class="col-xl-12 col-xxl-6 col-sm-6">
                                 <div class="card bg-primary">
                                     <div class="card-body p-3">
-                                        <a href="{{route('bank')}}">
+                                        <a href="{{route('transfer.page')}}">
                                             <div class="d-flex align-items-center">
                                                 <span class="bg-white rounded-circle p-3 me-4">
                                                     <svg width="28" height="28" viewbox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">

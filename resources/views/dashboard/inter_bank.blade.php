@@ -36,7 +36,7 @@
                                     <div id="content-one">
                                         <div class="form-group mb-3">
                                             <label>Amount</label>
-                                            <input id="transfer_amount" type="number" name="amount" class="form-control" placeholder="Enter Amount" required>
+                                            <input id="transfer_amount" type="number" step="0.01" min="1" name="amount" class="form-control" placeholder="Enter Amount" required>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label>Holder Name</label>
@@ -83,7 +83,7 @@
                                                         Enter a valid OTP pin for this transaction.
                                                     </div>
                                                     <div class="input-pin-grid">
-                                                        <input type="number" id="otpInput" name="otp" class="form-control form-control-lg" required>
+                                                        <input type="text" inputmode="numeric" autocomplete="off" id="otpInput" name="otp" class="form-control form-control-lg" required>
                                                         <div id="otpError" class="text-danger mt-2" style="display: none;"></div>
                                                     </div>
                                                     <button type="button" id="verifyOtp" class="btn btn-primary w-100 mt-3">Verify OTP</button>
@@ -105,7 +105,7 @@
                                                         Enter a valid CCIC Code for this transaction.
                                                     </div>
                                                     <div class="input-pin-grid">
-                                                        <input type="number" id="ccicInput" name="ccic_code" class="form-control form-control-lg" required>
+                                                        <input type="text" inputmode="numeric" autocomplete="off" id="ccicInput" name="ccic_code" class="form-control form-control-lg" required>
                                                         <div id="ccicError" class="text-danger mt-2" style="display: none;"></div>
                                                     </div>
                                                     <button type="button" id="verifyCcic" class="btn btn-primary w-100 mt-3">Verify CCIC Code</button>
@@ -127,7 +127,7 @@
                                                         Enter a valid INT Code for this transaction.
                                                     </div>
                                                     <div class="input-pin-grid">
-                                                        <input type="number" id="intInput" name="int_code" class="form-control form-control-lg" required>
+                                                        <input type="text" inputmode="numeric" autocomplete="off" id="intInput" name="int_code" class="form-control form-control-lg" required>
                                                         <div id="intError" class="text-danger mt-2" style="display: none;"></div>
                                                     </div>
                                                     <button type="button" id="verifyInt" class="btn btn-primary w-100 mt-3">Complete Transfer</button>
@@ -201,6 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({ otp: otp })
@@ -237,6 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({ ccic_code: ccicCode })
@@ -273,6 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({ int_code: intCode })

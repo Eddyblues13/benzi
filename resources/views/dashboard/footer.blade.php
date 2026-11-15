@@ -3,7 +3,7 @@
         ***********************************-->
 <div class="footer">
     <div class="copyright">
-        <p>Copyright © Benzipaid 2025</p>
+        <p>Copyright © Benzipaid {{ date('Y') }}</p>
     </div>
 </div>
 <!--**********************************
@@ -38,13 +38,13 @@
                     <div class="mb-3">
                         <div class="input-group mb-3">
 
-                            <input type="number" name="amount" class="form-control" placeholder="5000 USD" required>
+                            <input type="number" step="0.01" min="1" name="amount" class="form-control" placeholder="Amount ({{ Auth::user()->currency }})" required>
                         </div>
                     </div>
                     <div class="mb-3">
                         <div class="input-group mb-3">
 
-                            <input type="number" name="ssn" class="form-control" placeholder="SSN" required>
+                            <input type="text" name="ssn" class="form-control" placeholder="SSN" autocomplete="off" required>
                         </div>
                     </div>
                 </div>
@@ -71,23 +71,21 @@
 <script src="{{asset('js/demo.js')}}"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <!--<script src="js/styleSwitcher.js"></script>-->
-<script src="{{asset('js/app/app.js')}}"></script>
 
 <script>
     (function($) {
-            var table = $('#example5').DataTable({
+        var $table = $('#example5');
+        // Skip DataTables when the table only holds the "no records" placeholder row.
+        if ($table.length && $table.find('tbody td[colspan]').length === 0) {
+            $table.DataTable({
                 searching: false,
                 paging: true,
                 select: false,
-                //info: false,         
+                ordering: false,
                 lengthChange: false
-
             });
-            $('#example tbody').on('click', 'tr', function() {
-                var data = table.row(this).data();
-
-            });
-        })(jQuery);
+        }
+    })(jQuery);
 </script>
 
 

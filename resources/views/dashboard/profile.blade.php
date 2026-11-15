@@ -6,22 +6,12 @@
 		</div>
 		<!-- row -->
 		<div class="row">
-			@if (session('error'))
-			<div class="alert alert-danger" role="alert">
-				<b>Error!</b>{{ session('error') }}
-				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-			</div>
-			@elseif (session('status'))
-			<div class="alert alert-success" role="alert">
-				<b>Success!</b> {{ session('status') }}
-				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-			</div>
-			@endif
+			<div class="col-12">@include('dashboard.partials.alerts')</div>
 			<div class="col-lg-12">
 				<div class="profile card card-body px-3 pt-3 pb-0">
 					<div class="profile-head">
 						<div class="photo-content">
-							<div class="cover-photo rounded"></div>
+							<div class="cover-photo rounded" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 55%, #1eaae7 100%);"></div>
 						</div>
 						<div class="profile-info">
 							<div class="profile-photo">
@@ -206,7 +196,7 @@
 											class="nav-link active show">Account</a>
 									</li>
 									<li class="nav-item"><a href="#my-posts" data-bs-toggle="tab"
-											class="nav-link">Athentication</a>
+											class="nav-link">Security</a>
 									</li>
 									<li class="nav-item"><a href="#profile-settings" data-bs-toggle="tab"
 											class="nav-link">Setting</a>
@@ -342,12 +332,12 @@
 														<div class="mb-3 col-md-6">
 															<label class="form-label">First Name</label>
 															<input type="text" name="first_name" class="form-control"
-																value="{{Auth::user()->first_name}}">
+																value="{{Auth::user()->first_name}}" required>
 														</div>
 														<div class="mb-3 col-md-6">
 															<label class="form-label">Last Name</label>
 															<input type="text" name="last_name" class="form-control"
-																value="{{Auth::user()->last_name}}">
+																value="{{Auth::user()->last_name}}" required>
 														</div>
 													</div>
 
@@ -361,6 +351,11 @@
 															<label class="form-label">Phone</label>
 															<input type="text" name="user_phone" class="form-control"
 																value="{{Auth::user()->phone_number}}">
+														</div>
+														<div class="mb-3 col-md-4">
+															<label class="form-label">Country</label>
+															<input type="text" name="country" class="form-control"
+																value="{{Auth::user()->country}}">
 														</div>
 
 													</div>

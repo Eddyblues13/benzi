@@ -212,7 +212,9 @@
  /*********************/
  /*   Feather Icons   */
  /*********************/
- feather.replace();
+ if (typeof feather !== "undefined") {
+     feather.replace();
+ }
  
  /*********************/
  /*     Small Menu    */

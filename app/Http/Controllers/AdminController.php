@@ -2,392 +2,341 @@
 
 namespace App\Http\Controllers;
 
-use DB;
-use App\Models\Nft;
-use App\Models\Card;
-use App\Models\Loan;
-use App\Models\User;
-use App\Models\Debit;
-use App\Models\Credit;
-use GuzzleHttp\Client;
-use App\Models\Deposit;
-use App\Mail\DebitEmail;
-use App\Models\Transfer;
-use App\Mail\CreditEmail;
-use App\Mail\nftUserEmail;
 use App\Mail\ApproveEmail;
+use App\Mail\CreditEmail;
+use App\Mail\DebitEmail;
 use App\Mail\DeclineEmail;
+use App\Models\Credit;
+use App\Models\Debit;
+use App\Models\Deposit;
+use App\Models\Loan;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
+    /* ------------------------------------------------------------------
+     | Pages
+     * ------------------------------------------------------------------ */
+
     public function users()
     {
-        return view('admin.users');
+        return redirect()->route('dashboard');
     }
 
-
-    public function updateWallet(Request $request)
+    public function usersTransaction(Request $request)
     {
+        $query = Transaction::with('user')->latest();
 
-
-        $update = Auth::user();
-        $update->wallet_address = $request['wallet_address'];
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-
-            $ext = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $ext;
-            $file->move('admin/uploads/admin', $filename);
-            $update->bar_code =  $filename;
+        if ($type = $request->query('type')) {
+            $query->where('transaction', $type);
         }
 
-        $update->save();
-        return back()->with('status', 'Wallet Details Updated Successfully');
+        if ($request->query('status') !== null && $request->query('status') !== '') {
+            $query->where('transaction_status', (int) $request->query('status'));
+        }
+
+        return view('admin.transactions', [
+            'user_transactions' => $query->get(),
+            'filter_type' => $type,
+            'filter_status' => $request->query('status'),
+        ]);
     }
-
-
-
-
-
-
-    public function usersTransaction()
-    {
-        $user_transactions = Transaction::orderBy('id', 'desc')->get();
-        return view('admin.transactions', compact('user_transactions'));
-    }
-
-    public function deleteUser($id)
-    {
-
-        $user  = User::findOrFail($id);
-        $user->delete();
-        return back()->with('status', 'User deleted Successfully');
-    }
-
-
-
 
     public function userProfile($id)
     {
+        $userProfile = User::findOrFail($id);
+        $user_transactions = $userProfile->transactions()->latest()->get();
 
+        $deposits = Deposit::where('user_id', $userProfile->id)->get()->keyBy('id');
 
-
-        $data['credit_transfers'] = Transaction::where('user_id', $id)->where('transaction_type', 'Credit')->sum('transaction_amount');
-        $data['debit_transfers'] = Transaction::where('user_id', $id)->where('transaction_type', 'Debit')->sum('transaction_amount');
-        $data['user_deposits'] = Deposit::where('user_id', $id)->where('status', '1')->sum('amount');
-        $data['user_loans'] = Loan::where('user_id', $id)->where('status', '1')->sum('amount');
-        $data['user_card'] = Card::where('user_id', $id)->sum('amount');
-        $data['user_credit'] = Credit::where('user_id', $id)->where('status', '1')->sum('amount');
-        $data['user_debit'] = Debit::where('user_id', $id)->where('status', '1')->sum('amount');
-        $data['balance'] = $data['user_deposits'] + $data['credit_transfers'] + $data['user_loans'] - $data['debit_transfers'] - $data['user_card'];
-
-        $userProfile = DB::table('users')->where('id', $id)->first();
-        $user_transactions = Transaction::where('user_id', $id)->orderBy('id', 'desc')->get();
-
-
-        return view('admin.user', $data, compact('userProfile', 'user_transactions'));
+        return view('admin.user', [
+            'userProfile' => $userProfile,
+            'user_transactions' => $user_transactions,
+            'balance' => $userProfile->balance(),
+            'deposits' => $deposits,
+        ]);
     }
 
-
+    public function eth()
+    {
+        return view('admin.ethereum');
+    }
 
     public function adminChangePassword()
     {
         return view('admin.change_password');
     }
 
-    public function adminUpdatePassword(Request $request)
+    /* ------------------------------------------------------------------
+     | Admin's own account
+     * ------------------------------------------------------------------ */
+
+    public function updateWallet(Request $request)
     {
-        # Validation
         $request->validate([
-            'old_password' => 'required',
-            'new_password' => 'required|confirmed',
+            'wallet_address' => 'nullable|string|max:150',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:4096',
         ]);
 
+        $admin = Auth::user();
+        $admin->wallet_address = $request->input('wallet_address');
 
-        #Match The Old Password
-        if (!Hash::check($request->old_password, auth()->user()->password)) {
-            $data['message'] = 'old password not correct';
-            return back()->with("error", "Old Password Doesn't match! Please input your correct old password");
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = 'wallet_' . bin2hex(random_bytes(6)) . '.' . $file->extension();
+            $file->move(public_path('admin/uploads/admin'), $filename);
+            $admin->bar_code = $filename;
         }
 
+        $admin->save();
 
-        #Update the new Password
-        User::whereId(auth()->user()->id)->update([
-            'password' => Hash::make($request->new_password)
+        return back()->with('status', 'Wallet details updated successfully.');
+    }
+
+    public function adminUpdatePassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
         ]);
-        Session::flush();
-        Auth::guard('web')->logout();
-        return redirect('login')->with('status', 'Password Updated Successfully, Please login with your new password');
+
+        $admin = Auth::user();
+
+        if (! Hash::check($request->old_password, $admin->password)) {
+            return back()->with('error', "Old Password Doesn't match! Please input your correct old password");
+        }
+
+        $admin->forceFill(['password' => Hash::make($request->new_password)])->save();
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('status', 'Password updated successfully, please log in with your new password.');
     }
 
-    public function ApproveId(Request $request, $id)
+    /* ------------------------------------------------------------------
+     | Customer management
+     * ------------------------------------------------------------------ */
+
+    public function deleteUser($id)
     {
+        $user = User::findOrFail($id);
 
+        if ($user->id === Auth::id() || $user->isAdmin()) {
+            return back()->with('error', 'Administrator accounts cannot be deleted here.');
+        }
 
+        $user->delete();
 
-
-        $user = array();
-        $user['id_card_status'] = $request->status;
-        $update = DB::table('users')->where('id', $id)->update($user);
-
-
-
-        return back()->with('status', 'Kyc Details Updated Successfully');
-    }
-
-    public function creditUser(Request $request)
-    {
-
-        $ref = rand(76503737, 12344994);
-        $credit = new Credit;
-        $credit->user_id = $request['id'];
-        $credit->amount =  $request['amount'];
-        $credit->description =  $request['description'];
-        $credit->status = 1;
-        $credit->save();
-
-        $transaction = new Transaction;
-        $transaction->user_id = $request['id'];
-        $transaction->transaction_id = $credit->id;
-        $ref = $transaction->transaction_ref = "CD" . $ref;
-        $transaction->transaction_type = "Credit";
-        $transaction->transaction = "Credit";
-        $transaction->transaction_amount = $request['amount'];
-        $transaction->transaction_description = "Credit transaction";
-        $transaction->transaction_status = 1;
-        $transaction->save();
-
-        $full_name = $request['name'];
-        $email =  $request['email'];
-        $amount = $request->input('amount');
-        $date = Carbon::now();
-        $balance =  $request['balance'] + $request['amount'];
-        $description =  $request['description'];
-        $a_number =  $request['a_number'];
-        $currency =  $request['currency'];
-
-        $user = [
-
-            'account_number' => $a_number,
-            'account_name' => $full_name,
-            'full_name' => $full_name,
-            'description' => $description,
-            'amount' => $amount,
-            'date' => $date,
-            'balance' => $balance,
-            'currency' => $currency,
-            'ref' => $ref,
-        ];
-
-        Mail::to($email)->send(new CreditEmail($user));
-
-
-
-        return back()->with('status', 'User account credit successfully');
-    }
-
-
-    public function debitUser(Request $request)
-    {
-
-
-
-
-        $ref = rand(76503737, 12344994);
-        $debit = new Debit;
-        $debit->user_id = $request['id'];
-        $debit->amount =  $request['amount'];
-        $debit->description =  $request['description'];
-        $debit->status = 1;
-        $debit->save();
-
-        $transaction = new Transaction;
-        $transaction->user_id = $request['id'];
-        $transaction->transaction_id = $debit->id;
-        $ref = $transaction->transaction_ref = "DB" . $ref;
-        $transaction->transaction_type = "Debit";
-        $transaction->transaction = "Debit";
-        $transaction->transaction_amount = $request['amount'];
-        $transaction->transaction_description = "Debit Transaction";
-        $transaction->transaction_status = 1;
-        $transaction->save();
-
-
-
-        $full_name = $request['name'];
-        $email =  $request['email'];
-        $amount = $request->input('amount');
-        $date = Carbon::now();
-        $balance =  $request['balance'] - $request['amount'];
-        $description =  $request['description'];
-        $a_number =  $request['a_number'];
-        $currency =  $request['currency'];
-
-        $user = [
-
-            'account_number' => $a_number,
-            'account_name' => $full_name,
-            'full_name' => $full_name,
-            'description' => $description,
-            'amount' => $amount,
-            'date' => $date,
-            'balance' => $balance,
-            'currency' => $currency,
-            'ref' => $ref,
-        ];
-
-        Mail::to($email)->send(new DebitEmail($user));
-
-        return back()->with('status', 'User account debit successfully');
+        return redirect()->route('dashboard')->with('status', 'User deleted successfully.');
     }
 
     public function verifyUser($id)
     {
+        $user = User::findOrFail($id);
+        $user->user_status = (string) $user->user_status === '1' ? '0' : '1';
+        $user->save();
 
+        return back()->with('status', $user->user_status === '1' ? 'User verified successfully.' : 'User verification removed.');
+    }
 
-        $user = array();
-        $user['user_status'] = 1;
-        $update = DB::table('users')->where('id', $id)->update($user);
+    public function ApproveId(Request $request, $id)
+    {
+        $request->validate(['status' => 'required|in:0,1,2']);
 
-        return back()->with('status', 'User verified Updated Successfully');
+        $user = User::findOrFail($id);
+        $user->id_card_status = $request->input('status');
+        $user->save();
+
+        return back()->with('status', 'KYC details updated successfully.');
     }
 
     public function updateOtp(Request $request, $id)
     {
-
-
-
-
-        $user = array();
-        $user['otp'] = $request->otp;
-        $update = DB::table('users')->where('id', $id)->update($user);
-
-
-
-        return back()->with('status', 'user OTP Updated Successfully');
+        return $this->updateUserField($request, $id, 'otp', 'otp', 'OTP');
     }
-
-    public function updateSsn(Request $request, $id)
-    {
-
-        $user = array();
-        $user['ssn'] = $request->reflection;
-        $update = DB::table('users')->where('id', $id)->update($user);
-
-        return back()->with('status', 'user SSN Updated Successfully');
-    }
-
 
     public function updateCicCode(Request $request, $id)
     {
-
-        $user = array();
-        $user['ccic_code'] = $request->cic_code;
-        $update = DB::table('users')->where('id', $id)->update($user);
-
-        return back()->with('status', 'user CIC Updated Successfully');
+        return $this->updateUserField($request, $id, 'cic_code', 'ccic_code', 'CCIC code');
     }
 
     public function updateIntCode(Request $request, $id)
     {
-
-        $user = array();
-        $user['int_code'] = $request->int_code;
-        $update = DB::table('users')->where('id', $id)->update($user);
-
-        return back()->with('status', 'user INT Updated Successfully');
+        return $this->updateUserField($request, $id, 'int_code', 'int_code', 'INT code');
     }
 
-    public function approveTransaction(Request $request, $id)
+    public function updateSsn(Request $request, $id)
     {
-        $user_id = $request->user_id;
-
-
-        $transaction = array();
-        $transaction['transaction_status'] = 1;
-
-        $update = DB::table('transactions')->where('id', $id)->update($transaction);
-
-        $full_name = $request['name'];
-        $email =  $request['email'];
-        $amount = $request->input('amount');
-        $date = Carbon::now();
-        $description =  $request['description'];
-        $a_number =  $request['a_number'];
-        $currency =  $request['currency'];
-        $ref = $request['ref'];
-
-        $user = [
-
-            'account_number' => $a_number,
-            'account_name' => $full_name,
-            'full_name' => $full_name,
-            'description' => $description,
-            'amount' => $amount,
-            'date' => $date,
-            'currency' => $currency,
-            'ref' => $ref,
-        ];
-
-        Mail::to($email)->send(new ApproveEmail($user));
-        return redirect()->back()->with('message', 'Transaction Has Been Approved Successfully');
+        return $this->updateUserField($request, $id, 'reflection', 'ssn', 'SSN');
     }
 
-    public function declineTransaction(Request $request, $id)
+    public function updateEligibleLoan(Request $request, $id)
     {
-        $user_id = $request->user_id;
+        $request->validate(['eligible_loan' => 'required|numeric|min:0|max:100000000']);
 
+        $user = User::findOrFail($id);
+        $user->eligible_loan = $request->input('eligible_loan');
+        $user->save();
 
-        $transaction = array();
-        $transaction['transaction_status'] = 2;
-
-        $update = DB::table('transactions')->where('id', $id)->update($transaction);
-
-        $email = $request->email;
-        $amount = $request->amount;
-        $full_name = $request['name'];
-        $email =  $request['email'];
-        $amount = $request->input('amount');
-        $date = Carbon::now();
-        $description =  $request['description'];
-        $a_number =  $request['a_number'];
-        $currency =  $request['currency'];
-        $ref = $request['ref'];
-
-        $user = [
-
-            'account_number' => $a_number,
-            'account_name' => $full_name,
-            'full_name' => $full_name,
-            'description' => $description,
-            'amount' => $amount,
-            'date' => $date,
-            'currency' => $currency,
-            'ref' => $ref,
-        ];
-
-        Mail::to($email)->send(new DeclineEmail($user));
-        return redirect()->back()->with('message', 'Transaction Has Been Declined Successfully');
+        return back()->with('status', 'Eligible loan amount updated successfully.');
     }
 
+    private function updateUserField(Request $request, $id, string $input, string $column, string $label)
+    {
+        $request->validate([$input => 'required|string|max:50'], [], [$input => $label]);
+
+        $user = User::findOrFail($id);
+        $user->{$column} = trim($request->input($input));
+        $user->save();
+
+        return back()->with('status', "User {$label} updated successfully.");
+    }
 
     public function resetPassword(Request $request, $user_id)
     {
-        $password =  $request['password'];
+        $request->validate(['password' => 'required|string|min:8|confirmed']);
+
         $user = User::findOrFail($user_id);
+        $user->forceFill(['password' => Hash::make($request->input('password'))])->save();
 
+        return back()->with('status', 'Password has been reset successfully.');
+    }
 
-        $user->update([
-            'password' => Hash::make($password),
+    /* ------------------------------------------------------------------
+     | Money movements
+     * ------------------------------------------------------------------ */
+
+    public function creditUser(Request $request)
+    {
+        return $this->adjustBalance($request, Transaction::TYPE_CREDIT);
+    }
+
+    public function debitUser(Request $request)
+    {
+        return $this->adjustBalance($request, Transaction::TYPE_DEBIT);
+    }
+
+    private function adjustBalance(Request $request, string $type)
+    {
+        $data = $request->validate([
+            'id' => ['required', Rule::exists('users', 'id')],
+            'amount' => 'required|numeric|min:0.01|max:100000000',
+            'description' => 'required|string|max:255',
         ]);
 
-        return back()->with('message', 'Password has been reset successfully.');
+        $isCredit = $type === Transaction::TYPE_CREDIT;
+        $amount = round((float) $data['amount'], 2);
+
+        $transaction = DB::transaction(function () use ($data, $isCredit, $amount, $type) {
+            $user = User::whereKey($data['id'])->lockForUpdate()->first();
+
+            $model = $isCredit ? new Credit() : new Debit();
+            $model->user_id = $user->id;
+            $model->amount = $amount;
+            $model->description = $data['description'];
+            $model->status = 1;
+            $model->save();
+
+            return Transaction::create([
+                'user_id' => $user->id,
+                'transaction_id' => $model->id,
+                'transaction_ref' => Transaction::makeReference($isCredit ? 'CR' : 'DB'),
+                'transaction_type' => $type,
+                'transaction' => $type,
+                'transaction_amount' => $amount,
+                'transaction_description' => $data['description'],
+                'transaction_status' => Transaction::STATUS_APPROVED,
+            ]);
+        });
+
+        $user = $transaction->user;
+        $this->notify($user, $isCredit ? CreditEmail::class : DebitEmail::class, $transaction);
+
+        return back()->with('status', 'User account ' . ($isCredit ? 'credited' : 'debited') . ' successfully.');
+    }
+
+    public function approveTransaction($id)
+    {
+        return $this->settleTransaction($id, Transaction::STATUS_APPROVED);
+    }
+
+    public function declineTransaction($id)
+    {
+        return $this->settleTransaction($id, Transaction::STATUS_DECLINED);
+    }
+
+    /**
+     * Approve or decline a pending transaction and keep the linked deposit or
+     * loan record in step with it.
+     */
+    private function settleTransaction($id, int $status)
+    {
+        $transaction = DB::transaction(function () use ($id, $status) {
+            $transaction = Transaction::whereKey($id)->lockForUpdate()->firstOrFail();
+
+            if (! $transaction->isPending()) {
+                return null;
+            }
+
+            $transaction->transaction_status = $status;
+            $transaction->save();
+
+            $linked = match ($transaction->transaction) {
+                'Deposit' => Deposit::find($transaction->transaction_id),
+                'Loan' => Loan::find($transaction->transaction_id),
+                default => null,
+            };
+
+            if ($linked) {
+                $linked->status = $status;
+                $linked->save();
+            }
+
+            return $transaction;
+        });
+
+        if (! $transaction) {
+            return back()->with('error', 'This transaction has already been processed.');
+        }
+
+        $approved = $status === Transaction::STATUS_APPROVED;
+
+        if ($transaction->user) {
+            $this->notify($transaction->user, $approved ? ApproveEmail::class : DeclineEmail::class, $transaction);
+        }
+
+        return back()->with('message', 'Transaction has been ' . ($approved ? 'approved' : 'declined') . ' successfully.');
+    }
+
+    /**
+     * Email the customer about a transaction. A mail failure is logged but
+     * never undoes the money movement that has already been committed.
+     */
+    private function notify(User $user, string $mailable, Transaction $transaction): void
+    {
+        try {
+            Mail::to($user->email)->send(new $mailable([
+                'account_number' => $user->a_number,
+                'account_name' => $user->name,
+                'full_name' => $user->name,
+                'description' => $transaction->transaction_description,
+                'amount' => number_format((float) $transaction->transaction_amount, 2),
+                'date' => $transaction->updated_at ?? now(),
+                'balance' => number_format($user->balance(), 2),
+                'currency' => $user->currency,
+                'ref' => $transaction->transaction_ref,
+            ]));
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 }

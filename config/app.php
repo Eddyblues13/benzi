@@ -57,6 +57,18 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Administrator Email
+    |--------------------------------------------------------------------------
+    |
+    | Support tickets from the customer dashboard are delivered here, and the
+    | database seeder uses it for the initial administrator account.
+    |
+    */
+
+    'admin_email' => env('ADMIN_EMAIL', env('MAIL_FROM_ADDRESS')),
+
     'asset_url' => env('ASSET_URL'),
 
     /*

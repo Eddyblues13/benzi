@@ -8,14 +8,14 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
 
     <!-- Bootstrap Css -->
-    <link href="assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
     <!-- Icons Css -->
-    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
-    <link href="assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -30,11 +30,11 @@
                                 <div class="col-7">
                                     <div class="text-primary p-4">
                                         <h5 class="text-primary">Welcome Back !</h5>
-                                        <p>Sign in to continue to GlobalTb.</p>
+                                        <p>Sign in to continue to Benzipaid.</p>
                                     </div>
                                 </div>
                                 <div class="col-5 align-self-end">
-                                    <img src="assets/images/profile-img.png" alt="" class="img-fluid">
+                                    <img src="{{ asset('assets/images/profile-img.png') }}" alt="" class="img-fluid">
                                 </div>
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                                 <a class="auth-logo-light">
                                     <div class="avatar-md profile-user-wid mb-4">
                                         <span class="avatar-title rounded-circle bg-light">
-                                            <img src="assets/images/logo-light.svg" alt="" class="rounded-circle"
+                                            <img src="{{ asset('assets/images/logo-light.svg') }}" alt="" class="rounded-circle"
                                                 height="34">
                                         </span>
                                     </div>
@@ -53,7 +53,7 @@
                                 <a class="auth-logo-dark">
                                     <div class="avatar-md profile-user-wid mb-4">
                                         <span class="avatar-title rounded-circle bg-light">
-                                            <img src="assets/images/logo.svg" alt="" class="rounded-circle" height="34">
+                                            <img src="{{ asset('assets/images/logo.svg') }}" alt="" class="rounded-circle" height="34">
                                         </span>
                                     </div>
                                 </a>
@@ -76,8 +76,8 @@
                                     @endif
                                     <div class="mb-3">
                                         <label for="username" class="form-label">Email</label>
-                                        <input type="text" name="email" class="form-control" id="email"
-                                            placeholder="Email">
+                                        <input type="email" name="email" class="form-control" id="email"
+                                            placeholder="Email" value="{{ old('email') }}" required autofocus>
                                         @if ($errors->has('email'))
                                         <span class="text-danger">{{ $errors->first('email') }}</span>
                                         @endif
@@ -110,8 +110,7 @@
                                     </div>
 
                                     <div class="mt-4 text-center">
-                                        <h5 class="font-size-14 mb-3">Sign in with</h5>
-                                        <p>Don't have an account ? <a href="{{ route('register') }}"
+                                                                                <p>Don't have an account ? <a href="{{ route('register') }}"
                                                 class="fw-medium text-primary"> Signup now </a> </p>
                                     </div>
 
@@ -145,82 +144,20 @@
     <!-- end account-pages -->
 
     <!-- JAVASCRIPT -->
-    <script src="assets/libs/jquery/jquery.min.js"></script>
-    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/libs/metismenu/metisMenu.min.js"></script>
-    <script src="assets/libs/simplebar/simplebar.min.js"></script>
-    <script src="assets/libs/node-waves/waves.min.js"></script>
+    <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
 
     <!-- validation init -->
-    <script src="assets/js/pages/validation.init.js"></script>
+    <script src="{{ asset('assets/js/pages/validation.init.js') }}"></script>
 
     <!-- App js -->
-    <script src="assets/js/app.js"></script>
+    <script src="{{ asset('assets/js/app.js') }}"></script>
     <!-- Bootstrap Toasts Js -->
-    <script src="assets/js/pages/bootstrap-toastr.init.js"></script>
+    <script src="{{ asset('assets/js/pages/bootstrap-toastr.init.js') }}"></script>
 
 </body>
 
 </html>
-<div class="position-fixed top-0 end-0 p-2" style="z-index: 1005">
-    <div id="ErrorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <img src="https://globaltb.online/user/logo.png" alt="" class="me-2" height="18">
-            <strong class="me-auto">Error</strong>
-            <small>Now..</small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body" style="background-color:red;">
-            Hello, world! This is a toast message.
-        </div>
-    </div>
-</div>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    $(document).ready(function() {
-        $('#login_form').on('submit', function(e) {
-            e.preventDefault();
-            $(".response").html("Loading...<div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div>")
-            var email = $('#email').val();
-            var password = $('#password').val();
-
-            if (email == '' || password == '') {
-                $(".toast-body").html('Enter all field');
-                $("#ErrorToast").toast("show");
-                $(".response").html("")
-                return false;
-            }
-            $.ajax({
-                type: "POST",
-                url: '{{ route("login.custom") }}',
-                data: $(this).serialize(),
-                dataType: "json",
-                success: function(data) {
-                    //alert('error');
-                    $(".response").html(data.content);
-                    if (data.content == 'Successful') {
-                        $(".response").html(data.message);
-                        window.location = data.redirect;
-
-                    } else
-                    if (data.content == 'Error') {
-                        $(".response").html(data.message);
-                        window.location = data.redirect;
-                    }
-                },
-                error: function(data, errorThrown) {
-                    Swal.fire('The Internet?', 'Check network connection!', 'question');
-                }
-            });
-        });
-    });
-</script>
-
-<script>
-    function login(id) {
-        id.innerHTML = "Verifying account..";
-        setTimeout(function() {
-            id.innerHTML = "Log in";
-        }, 3000);
-    }
-</script>

@@ -7,17 +7,7 @@
             Content body start
         ***********************************-->
 <div class="content-body">
-    @if (session('error'))
-    <div class="alert box-bdr-red alert-dismissible fade show text-red" role="alert">
-        <b>Error!</b>{{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @elseif (session('status'))
-    <div class="alert box-bdr-green alert-dismissible fade show text-green" role="alert">
-        <b>Success!</b> {{ session('status') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @endif
+    <div class="container-fluid pb-0">@include('dashboard.partials.alerts')</div>
     <!-- row -->
     <div class="container-fluid">
         <div class="form-head mb-4">
@@ -56,8 +46,8 @@
                         <div class="media align-items-center invoice-card">
                             <div class="media-body">
                                 <h2 class="fs-38 text-black font-w600">
-                                    {{Auth::user()->currency}}{{number_format(Auth::user()->eligible_loan, 2, '.',
-                                    ',')}}</< /h2>
+                                    {{Auth::user()->currency}}{{number_format((float) Auth::user()->eligible_loan, 2, '.',
+                                    ',')}}</h2>
                                     <span class="fs-18">Eligible Amount</span>
                             </div>
                             <span class="p-3 border ms-3 rounded-circle">
@@ -110,7 +100,7 @@
                 <div class="d-sm-flex  d-block align-items-center mb-4">
                     <div class="me-auto">
                         <h4 class="fs-20 text-black">Loan History</h4>
-                        <span class="fs-12"><i class="flaticon-381-help-1"></i>&nbsp;Loans are only offered to existing
+                        <span class="fs-12"><i class="fa fa-question-circle"></i>&nbsp;Loans are only offered to existing
                             and eligible customers</span>
                     </div>
 
@@ -122,7 +112,7 @@
                         <thead>
                             <tr>
 
-                                <th>sn</th>
+                                <th>Reference</th>
                                 <th>Amount</th>
                                 <th>Date</th>
                                 <th>Account Number</th>
@@ -130,25 +120,27 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($transaction as $details)
+                            @forelse($transaction as $details)
                             <tr>
                                 <td><span class="text-black">{{$details->transaction_ref}}</span></td>
-                                <td><span class="text-black font-w500">$ 600</span></td>
-                                <td><span class="text-black text-nowrap">{{
-                                        \Carbon\Carbon::parse($details->transaction_created_at)->format('D, M j, Y g:i
-                                        A') }}</span></td>
-
+                                <td><span class="text-black font-w500">{{Auth::user()->currency}}{{ number_format($details->transaction_amount, 2) }}</span></td>
+                                <td><span class="text-black text-nowrap">{{ $details->created_at?->format('D, M j, Y g:i A') }}</span></td>
                                 <td><span class="text-black">{{Auth::user()->a_number}}</span></td>
                                 <td class="text-center">
-                                    @if($details->transaction_status == '1')
-                                    <a href="javascript:void(0)" class="btn btn-success btn-rounded">Completed</a>
+                                    @if($details->transaction_status == 1)
+                                    <span class="btn btn-success btn-rounded btn-xs">Approved</span>
+                                    @elseif($details->transaction_status == 2)
+                                    <span class="btn btn-danger btn-rounded btn-xs">Declined</span>
                                     @else
-                                    <a href="javascript:void(0)" class="btn btn-warning btn-rounded">Pending</a>
+                                    <span class="btn btn-warning btn-rounded btn-xs">Pending</span>
                                     @endif
-
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">You have not requested any loans yet.</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -159,99 +151,4 @@
 <!--**********************************
             Content body end
         ***********************************-->
-
-<!--**********************************
-            Footer start
-        ***********************************-->
-<div class="footer">
-    <div class="copyright">
-        <p>Copyright © 2024 Benzipaid 2023</p>
-    </div>
-</div>
-<!--**********************************
-            Footer end
-        ***********************************-->
-
-<!--**********************************
-           Support ticket button start
-        ***********************************-->
-
-<!--**********************************
-           Support ticket button end
-        ***********************************-->
-
-
-</div>
-<!--**********************************
-        Main wrapper end
-    ***********************************-->
-<form action="{{route('make.loan')}}" method="POST">
-    @csrf
-    <div class="modal fade" id="reqLoan">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Request Loan</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="loan_response"></div>
-                    <div class="mb-3">
-                        <div class="input-group mb-3">
-
-                            <input type="number" name="amount" class="form-control" placeholder="5000 USD" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="input-group mb-3">
-
-                            <input type="number" name="ssn" class="form-control" placeholder="SSN" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Request Now</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-<!--**********************************
-        Scripts
-    ***********************************-->
-<!-- Required vendors -->
-<script src="vendor/global/global.min.js"></script>
-<script src="vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-<script src="vendor/chart.js/Chart.bundle.min.js"></script>
-
-<!-- Datatable -->
-<script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
-
-<script src="js/custom.min.js"></script>
-<script src="js/deznav-init.js"></script>
-<script src="js/demo.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<!--<script src="js/styleSwitcher.js"></script>-->
-<script src="js/app/app.js"></script>
-<script>
-    (function($) {
-            var table = $('#example5').DataTable({
-                searching: false,
-                paging: true,
-                select: false,
-                //info: false,         
-                lengthChange: false
-
-            });
-            $('#example tbody').on('click', 'tr', function() {
-                var data = table.row(this).data();
-
-            });
-        })(jQuery);
-</script>
-
-
-</body>
-
-</html>
+@include('dashboard.footer')

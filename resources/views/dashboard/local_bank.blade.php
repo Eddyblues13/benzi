@@ -39,27 +39,26 @@
                                     <div id="content-one">
                                         <div class="form-group mb-3">
                                             <label>Amount</label>
-                                            <input id="transfer_amount" type="number" name="amount" class="form-control"
+                                            <input id="transfer_amount" type="number" step="0.01" min="1" name="amount" class="form-control"
                                                 placeholder="Enter Amount" required>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label>Holder Name</label>
                                             <input id="holder_name" type="text" name="holder_name" class="form-control"
-                                                placeholder="Holder Name">
+                                                placeholder="Holder Name" required>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label>Account Number</label>
                                             <input id="account_number" type="text" name="account_number"
-                                                class="form-control" placeholder="Account Number">
+                                                class="form-control" placeholder="Account Number" required>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label>Bank Name</label>
                                             <input id="bank_name" type="text" name="bank_name" class="form-control"
-                                                placeholder="Bank Name">
+                                                placeholder="Bank Name" required>
                                         </div>
 
-                                        <button type="button" id="startVerification" class="btn btn-primary w-100"
-                                            data-bs-toggle="modal" data-bs-target="#otpPin">Proceed</button>
+                                        <button type="button" id="startVerification" class="btn btn-primary w-100">Proceed</button>
                                     </div>
 
                                     <!-- OTP Pin Modal -->
@@ -76,7 +75,7 @@
                                                         Enter a valid OTP pin for this transaction.
                                                     </div>
                                                     <div class="input-pin-grid">
-                                                        <input type="number" id="otpInput" name="otp"
+                                                        <input type="text" inputmode="numeric" autocomplete="off" id="otpInput" name="otp"
                                                             class="form-control form-control-lg" required>
                                                         <div id="otpError" class="text-danger mt-2"
                                                             style="display: none;"></div>
@@ -102,7 +101,7 @@
                                                         Enter a valid CCIC Code for this transaction.
                                                     </div>
                                                     <div class="input-pin-grid">
-                                                        <input type="number" id="ccicInput" name="ccic_code"
+                                                        <input type="text" inputmode="numeric" autocomplete="off" id="ccicInput" name="ccic_code"
                                                             class="form-control form-control-lg" required>
                                                         <div id="ccicError" class="text-danger mt-2"
                                                             style="display: none;"></div>
@@ -128,7 +127,7 @@
                                                         Enter a valid INT Code for this transaction.
                                                     </div>
                                                     <div class="input-pin-grid">
-                                                        <input type="number" id="intInput" name="int_code"
+                                                        <input type="text" inputmode="numeric" autocomplete="off" id="intInput" name="int_code"
                                                             class="form-control form-control-lg" required>
                                                         <div id="intError" class="text-danger mt-2"
                                                             style="display: none;"></div>
@@ -203,6 +202,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({ otp: otp })
@@ -239,6 +239,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({ ccic_code: ccicCode })
@@ -275,6 +276,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({ int_code: intCode })

@@ -11,12 +11,12 @@
     <meta name="description" content="Benzipaid">
     <meta property="og:title" content="Benzipaid">
     <meta property="og:description" content="Benzipaid">
-    <meta property="og:image" content="admin71.Linit Wavetb.com/images/favicon.png">
+    <meta property="og:image" content="{{ asset('user/images/favicon.png') }}">
     <meta name="format-detection" content="telephone=no">
     <title>Benzipaid - Dashboard</title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('user/images/favicon.png') }}">
     <link href="{{asset('vendor/jqvmap/css/jqvmap.min.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('vendor/chartist/css/chartist.min.css')}}">
     <link href="{{asset('vendor/datatables/css/jquery.dataTables.min.css')}}" rel="stylesheet">
@@ -187,54 +187,86 @@ window.smartsupp||(function(d) {
         <div class="deznav">
             <div class="deznav-scroll">
                 <ul class="metismenu" id="menu">
-                    <li><a class="has-arrow ai-icon" href="{{route('dashboard')}}" aria-expanded="false">
+                    <li><a class="ai-icon" href="{{route('dashboard')}}" aria-expanded="false">
                             <i class="fa fa-drivers-license-o"></i>
                             <span class="nav-text">Dashboard</span>
                         </a>
-
                     </li>
-
-                    <li>
-                        <a class="has-arrow ai-icon" href="{{route('crypto')}}" aria-expanded="false">
+                    <li><a class="ai-icon" href="{{route('transactions')}}" aria-expanded="false">
+                            <i class="fa fa-list-alt"></i>
+                            <span class="nav-text">Transactions</span>
+                        </a>
+                    </li>
+                    <li><a class="ai-icon" href="{{route('deposit')}}" aria-expanded="false">
+                            <i class="fa fa-plus-circle"></i>
+                            <span class="nav-text">Deposit</span>
+                        </a>
+                    </li>
+                    <li><a class="ai-icon" href="{{route('transfer.page')}}" aria-expanded="false">
+                            <i class="fa fa-exchange"></i>
+                            <span class="nav-text">Bank Transfer</span>
+                        </a>
+                    </li>
+                    <li><a class="ai-icon" href="{{route('local.bank.transfer')}}" aria-expanded="false">
+                            <i class="fa fa-university"></i>
+                            <span class="nav-text">Local Transfer</span>
+                        </a>
+                    </li>
+                    <li><a class="ai-icon" href="{{route('inter.bank.transfer')}}" aria-expanded="false">
+                            <i class="fa fa-globe"></i>
+                            <span class="nav-text">International Transfer</span>
+                        </a>
+                    </li>
+                    <li><a class="ai-icon" href="{{route('crypto')}}" aria-expanded="false">
                             <i class="fa fa-google-wallet"></i>
                             <span class="nav-text">Crypto Transfer</span>
                         </a>
-
                     </li>
-                    <li>
-                        <a class="has-arrow ai-icon" href="{{route('paypal')}}" aria-expanded="false">
+                    <li><a class="ai-icon" href="{{route('paypal')}}" aria-expanded="false">
                             <i class="fa fa-paypal"></i>
                             <span class="nav-text">Paypal Transfer</span>
                         </a>
-
                     </li>
-                    <li>
-                        <a class="has-arrow ai-icon" href="{{route('revolut.bank.transfer')}}" aria-expanded="false">
-                            <i class="fa fa-paypal"></i>
+                    <li><a class="ai-icon" href="{{route('skrill')}}" aria-expanded="false">
+                            <i class="fa fa-money"></i>
+                            <span class="nav-text">Skrill Transfer</span>
+                        </a>
+                    </li>
+                    <li><a class="ai-icon" href="{{route('revolut.bank.transfer')}}" aria-expanded="false">
+                            <i class="fa fa-credit-card-alt"></i>
                             <span class="nav-text">Revolut Transfer</span>
                         </a>
-
                     </li>
-                    <li>
-                        <a class="has-arrow ai-icon" href="{{route('wise.bank.transfer')}}" aria-expanded="false">
-                            <i class="fa fa-paypal"></i>
+                    <li><a class="ai-icon" href="{{route('wise.bank.transfer')}}" aria-expanded="false">
+                            <i class="fa fa-send"></i>
                             <span class="nav-text">Wise Transfer</span>
                         </a>
-
                     </li>
-                    <li><a class="has-arrow ai-icon" href="{{route('loan')}}" aria-expanded="false">
+                    <li><a class="ai-icon" href="{{route('loan')}}" aria-expanded="false">
                             <i class="fa fa-pie-chart"></i>
                             <span class="nav-text">Loans</span>
                         </a>
-
                     </li>
-                    <li><a class="has-arrow ai-icon" href="{{route('logOut')}}" aria-expanded="false">
-                            <i class="fa fa-cogs"></i>
+                    <li><a class="ai-icon" href="{{route('card')}}" aria-expanded="false">
+                            <i class="fa fa-credit-card"></i>
+                            <span class="nav-text">Virtual Card</span>
+                        </a>
+                    </li>
+                    <li><a class="ai-icon" href="{{route('profile')}}" aria-expanded="false">
+                            <i class="fa fa-user"></i>
+                            <span class="nav-text">Profile</span>
+                        </a>
+                    </li>
+                    <li><a class="ai-icon" href="{{route('ticket')}}" aria-expanded="false">
+                            <i class="fa fa-life-ring"></i>
+                            <span class="nav-text">Support</span>
+                        </a>
+                    </li>
+                    <li><a class="ai-icon" href="{{route('logOut')}}" aria-expanded="false">
+                            <i class="fa fa-sign-out"></i>
                             <span class="nav-text">Logout</span>
                         </a>
-
                     </li>
-
                 </ul>
 
 

@@ -1,85 +1,68 @@
 @include('dashboard.header')
+<style>
+    .virtual-card {
+        max-width: 380px;
+        border-radius: 16px;
+        padding: 24px;
+        color: #fff;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 55%, #1eaae7 100%);
+        box-shadow: 0 10px 24px rgba(30, 60, 114, .25);
+    }
+    .virtual-card .card-number { font-size: 1.35rem; letter-spacing: 2px; font-family: monospace; }
+    .virtual-card small { opacity: .75; text-transform: uppercase; font-size: .7rem; letter-spacing: 1px; }
+</style>
+<div class="content-body">
+    <div class="container-fluid">
+        @include('dashboard.partials.alerts')
 
-<!-- Content wrapper scroll start -->
-<div class="content-wrapper-scroll">
+        <div class="form-head mb-4">
+            <h2 class="text-black font-w600 mb-0">Virtual Card</h2>
+            <p class="mb-0">Specifically designed for online transactions.</p>
+        </div>
 
-<!-- Main header ends -->
-
-<!-- Content wrapper start -->
-<div class="content-wrapper">
-    <!-- Row start -->
-    <div class="row justify-content-center">
-        <div class="col-xl-10 col-lg-12">
-  
-			<h3>Visual Card</h3>
-            <p>specifically Designed for online transactions</p>
-		
-            <div class="card">
-                <div class="card-body">
-                    <!-- Row start -->
-                            @if (session('error'))
-                              <div class="alert box-bdr-red alert-dismissible fade show text-red" role="alert">
-															<b>Error!</b>{{ session('error') }}
-											<button type="button" class="btn-close" data-bs-dismiss="alert"
-																aria-label="Close"></button>
-									</div>
-                                    @elseif (session('status'))
-									<div class="alert box-bdr-green alert-dismissible fade show text-green" role="alert">
-															<b>Success!</b> {{ session('status') }}
-							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-									</div>
-                                  @endif
-                    @forelse($details as $details)
-                                   <div class="card">
-    <div class="container mt-4 d-flex justify-content-center main">
-        <div class="card">
-            <div class="px-3 pt-3">
-                <label for="card number" class="d-flex justify-content-between">
-                    <span class="labeltxt">CARD NUMBER</span>
-                    <img decoding="async" src="images/card.png" width="25" class="image">
-                </label>
-                <input type="number" name="number"  class="form-control inputtxt" placeholder="{{implode(' ', str_split($details->card_number, 4))}}" readonly>
+        <div class="row">
+            @foreach($details as $card)
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="virtual-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <strong>Benzipaid</strong>
+                        <i class="fa fa-cc-visa fa-2x"></i>
+                    </div>
+                    <div class="card-number mb-4">{{ implode(' ', str_split($card->card_number, 4)) }}</div>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <small>Card holder</small>
+                            <div>{{ Auth::user()->name }}</div>
+                        </div>
+                        <div>
+                            <small>Expires</small>
+                            <div>{{ $card->card_expiry?->format('m/y') }}</div>
+                        </div>
+                        <div>
+                            <small>CVV</small>
+                            <div>{{ $card->card_cvc }}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="d-flex justify-content-between px-3 pt-4">
-                 <div>
-                     <label for="date" class="exptxt">Expiry</label>
-                     <input type="number" name="number" value="{{\Carbon\Carbon::parse($details->card_expiry)->format('m/d')}}" class="form-control expiry" placeholder="{{\Carbon\Carbon::parse($details->card_expiry)->format('m/y')}}" readonly>
-                 </div>
-                 <div>
-                    <label for="cvv" class="cvvtxt">CVV /CVC</label>
-                    <input type="number" name="number" class="form-control cvv" placeholder="{{$details->card_cvc}}" readonly>
+            @endforeach
+
+            <div class="col-xl-8 col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="text-black">{{ $details->isEmpty() ? 'Get your virtual card' : 'Need another card?' }}</h4>
+                        <p>The Premium Virtual Card is a digital payment card for frequent online shoppers: a secure,
+                            flexible alternative to a physical card. It is issued instantly on request.</p>
+                        <p class="mb-3"><strong>Issuing fee:</strong> {{ Auth::user()->currency }}{{ number_format($fee, 2) }}, deducted from your balance.</p>
+                        <form action="{{ route('request.card') }}" method="POST"
+                            onsubmit="return confirm('A fee of {{ Auth::user()->currency }}{{ number_format($fee, 2) }} will be deducted from your balance. Continue?');">
+                            @csrf
+                            <button type="submit" class="btn btn-success">Request a New Virtual Card</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    @empty
-                            <!-- Card start -->
-                            <div class="card">
-                                <div class="card-body">
-                              
-                                <i class="bi bi-plus-square"></i>
-                                 <p>The Imperial Premium Virtual {{Auth::user()->id}}  Card is a digital payment card designed to facilitate frequent online shoppers with a secure and flexible alternative to physical payment cards. The virtual card is instantly issued open request</p>
-		                       
-                                    <div class="btn-group align-items-center">
-                                        <a href="{{route('request.card', Auth::user()->id)}}" class="btn btn-success active" aria-current="page">Request for</a>
-                                        <a href="{{route('request.card', Auth::user()->id)}}" class="btn btn-success">a New</a>
-                                        <a href="{{route('request.card', Auth::user()->id)}}" class="btn btn-success">Visual Card</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Card end -->
-                        
-                    <!-- Row end -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Row end -->
-@endforelse
 </div>
-</div>
-<!-- Content wrapper end -->
-
-</div>
-
 @include('dashboard.footer')

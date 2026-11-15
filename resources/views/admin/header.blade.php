@@ -9,8 +9,7 @@
     <!-- Meta -->
     <meta name="description" content="Best Bootstrap Admin Dashboards" />
     <meta name="author" content="Bootstrap Gallery" />
-    <link rel="canonical" href="https://www.bootstrap.gallery/">
-    <meta property="og:url" content="https://www.bootstrap.gallery">
+        <meta property="og:url" content="https://www.bootstrap.gallery">
     <meta property="og:title" content="Admin Templates - Dashboard Templates | Bootstrap Gallery">
     <meta property="og:description" content="Marketplace for Bootstrap Admin Dashboards">
     <meta property="og:type" content="Website">
@@ -77,17 +76,17 @@
           <!-- Header profile start -->
           <div class="header-profile d-flex align-items-center">
             <div class="dropdown">
-              <a href="#" id="userSettings" class="user-settings" data-toggle="dropdown" aria-haspopup="true">
-                <span class="user-name d-none d-md-block">Admin</span>
+              <a href="#" id="userSettings" class="user-settings" data-bs-toggle="dropdown" aria-haspopup="true">
+                <span class="user-name d-none d-md-block">{{ Auth::user()->name }}</span>
                 <span class="avatar">
-                  <img src="{{asset('admin/assets/images/user7.png" alt="Admin Templates')}}" />
+                  <img src="{{ asset('admin/assets/images/user7.png') }}" alt="Admin" />
                   <span class="status online"></span>
                 </span>
               </a>
               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userSettings">
                 <div class="header-profile-actions">
-                  <a href="#">Profile</a>
-                  <a href="#">Settings</a>
+                  <a href="{{ route('admin.change.password') }}">Change Password</a>
+                  <a href="{{ route('update.wallet') }}">Wallet Settings</a>
                   <a href="{{route('logOut')}}">Logout</a>
                 </div>
               </div>

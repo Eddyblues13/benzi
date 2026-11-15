@@ -56,13 +56,13 @@
 
 /*$primary  : #7356f1 !default;*/
 
-@import url("../icons/simple-line-icons/css/simple-line-icons.css");
-@import url("../icons/fontawesome/css/all.min.css");
-@import url("../icons/material-design-iconic-font/css/materialdesignicons.min.css");
-@import url("../icons/themify-icons/css/themify-icons.css");
-@import url("../icons/line-awesome/css/line-awesome.min.css");
-@import url("../icons/avasta/css/style.css");
-@import url("../icons/flaticon/flaticon.css");
+@import url("../user/icons/simple-line-icons/css/simple-line-icons.css");
+@import url("../user/icons/fontawesome/css/all.min.css");
+@import url("../user/icons/material-design-iconic-font/css/materialdesignicons.min.css");
+@import url("../user/icons/themify-icons/css/themify-icons.css");
+@import url("../user/icons/line-awesome/css/line-awesome.min.css");
+@import url("../user/icons/avasta/css/style.css");
+@import url("../user/icons/flaticon/flaticon.css");
 @import url(../vendor/animate/animate.min.css);
 @import url(../vendor/aos/css/aos.min.css);
 @import url(../vendor/perfect-scrollbar/css/perfect-scrollbar.css);

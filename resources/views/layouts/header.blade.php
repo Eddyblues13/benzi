@@ -85,7 +85,7 @@ window.smartsupp||(function(d) {
                         <script data-cfasync="false"
                             src="cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
                         <script type="text/javascript"
-                            src="translate.google.com/translate_a/elementa0d8a0d8.html?cb=googleTranslateElementInit">
+                            src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
                         </script>
                         <script type="text/javascript">
                             function googleTranslateElementInit() {

@@ -1,7 +1,7 @@
 
         <!-- App Footer start -->
         <div class="app-footer">
-          <span>© Bootstrap Gallery 2023</span>
+          <span>© Benzipaid {{ date('Y') }}</span>
         </div>
         <!-- App footer end -->
 
@@ -27,29 +27,6 @@
     <!-- Overlay Scroll JS -->
     <script src="{{asset('admin/assets/vendor/overlay-scroll/jquery.overlayScrollbars.min.js')}}"></script>
     <script src="{{asset('admin/assets/vendor/overlay-scroll/custom-scrollbar.js')}}"></script>
-
-    <!-- News ticker -->
-    <script src="{{asset('admin/assets/vendor/newsticker/newsTicker.min.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/newsticker/custom-newsTicker.js')}}"></script>
-
-    <!-- Apex Charts -->
-    <script src="{{asset('admin/assets/vendor/apex/apexcharts.min.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/apex/custom/dash2/revenue.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/apex/custom/dash2/analytics.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/apex/custom/dash2/sparkline.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/apex/custom/dash2/sales.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/apex/custom/dash2/reports.js')}}"></script>
-
-    <!-- Vector Maps -->
-    <script src="{{asset('admin/assets/vendor/jvectormap/jquery-jvectormap-2.0.5.min.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/jvectormap/world-mill-en.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/jvectormap/gdp-data.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/jvectormap/continents-mill.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/jvectormap/custom/world-map-markers4.js')}}"></script>
-
-    <!-- Rating JS -->
-    <script src="{{asset('admin/assets/vendor/rating/raty.js')}}"></script>
-    <script src="{{asset('admin/assets/vendor/rating/raty-custom.js')}}"></script>
 
     		<!-- Data Tables -->
 		<script src="{{asset('admin/assets/vendor/datatables/dataTables.min.js')}}"></script>

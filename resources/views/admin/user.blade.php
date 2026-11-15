@@ -1,435 +1,276 @@
 @include('admin.header')
 @include('admin.navbar')
-<!-- Content wrapper start -->
-<div class="content-wrapper">
-	<!-- Row start -->
-	<div class="row gx-3">
-		<div class="col-sm-4 col-12">
-			<div class="card card-cover rounded-2">
-				<div class="contact-card">
-					@if($userProfile->user_status==="0")
-					<a href="{{route('verify_user',$userProfile->id)}}" class="edit-contact-card btn btn-danger">
-						<i class="bi bi-pencil">verify</i>
-					</a>
-					@elseif($userProfile->user_status==="1")
-					<a href="#" class="edit-contact-card btn btn-success">
-						<i class="bi bi-pencil">verified</i>
-					</a>
-					@endif
 
-					<img src="{{ asset('uploads/display/' . ($userProfile->display_picture ? $userProfile->display_picture : 'avatar.png')) }}"
-						alt="User Avatar" class="contact-avatar" />
-					<h5>{{$userProfile->first_name}} {{$userProfile->last_name}}</h5>
-					<ul class="list-group">
-						<li class="list-group-item">
-							<span>Email: </span>{{$userProfile->email}}
-						</li>
-						<li class="list-group-item">
-							<span>Account Number: </span>{{$userProfile->a_number}}
-						</li>
-						<li class="list-group-item">
-							<span>Phone: </span>{{$userProfile->phone_number}}
-						</li>
-						<li class="list-group-item">
-							<span>Country: </span>{{$userProfile->country}}
-						</li>
-						<li class="list-group-item">
-							<span>OTP: </span>{{$userProfile->otp}}
-						</li>
-						<li class="list-group-item">
-							<span>CCIC Code: </span>{{$userProfile->ccic_code}}
-						</li>
-						<li class="list-group-item">
-							<span>INT Code: </span>{{$userProfile->int_code}}
-						</li>
-						<li class="list-group-item">
-							<span>Account Balance: </span>{{$userProfile->currency}}{{number_format($balance, 2)}}
-						</li>
-					</ul>
-				</div>
+@php
+    $isVerified = (string) $userProfile->user_status === '1';
+    $fullName = trim($userProfile->first_name . ' ' . $userProfile->last_name);
+@endphp
+
+<!-- Content wrapper scroll start -->
+<div class="content-wrapper-scroll">
+
+	<!-- Main header starts -->
+	<div class="main-header d-flex align-items-center justify-content-between position-relative">
+		<div class="d-flex align-items-center justify-content-center">
+			<div class="page-icon">
+				<i class="bi bi-person"></i>
+			</div>
+			<div class="page-title d-none d-md-block">
+				<h5>{{ $fullName }}</h5>
 			</div>
 		</div>
+		<a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-secondary">Back to users</a>
+	</div>
+	<!-- Main header ends -->
 
-		<div class="col-sm-8 col-12">
-			<!-- Security Codes Management Card -->
-			<div class="card">
-				<div class="card-header">
-					<h5 class="card-title">Security Codes Management</h5>
+	<!-- Content wrapper start -->
+	<div class="content-wrapper">
+		@include('admin.partials.alerts')
+
+		<div class="row gx-3">
+			<div class="col-xl-4 col-12">
+				<div class="card card-cover rounded-2">
+					<div class="contact-card">
+						<form action="{{ route('verify_user', $userProfile->id) }}" method="POST" class="edit-contact-card">
+							@csrf
+							<button type="submit" class="btn btn-sm {{ $isVerified ? 'btn-success' : 'btn-danger' }}"
+								title="{{ $isVerified ? 'Click to remove verification' : 'Click to verify this user' }}">
+								<i class="bi {{ $isVerified ? 'bi-patch-check' : 'bi-patch-exclamation' }}"></i>
+								{{ $isVerified ? 'Verified' : 'Verify' }}
+							</button>
+						</form>
+
+						<img src="{{ asset('uploads/display/' . ($userProfile->display_picture ?: 'avatar.png')) }}"
+							alt="User Avatar" class="contact-avatar" />
+						<h5>{{ $fullName }}</h5>
+						<ul class="list-group">
+							<li class="list-group-item"><span>Email: </span>{{ $userProfile->email }}</li>
+							<li class="list-group-item"><span>Account Number: </span>{{ $userProfile->a_number }}</li>
+							<li class="list-group-item"><span>Account Type: </span>{{ $userProfile->account_type }}</li>
+							<li class="list-group-item"><span>Phone: </span>{{ $userProfile->phone_number }}</li>
+							<li class="list-group-item"><span>Country: </span>{{ $userProfile->country }}</li>
+							<li class="list-group-item"><span>Address: </span>{{ $userProfile->address }}</li>
+							<li class="list-group-item"><span>Email activated: </span>{{ (string) $userProfile->is_activated === '1' ? 'Yes' : 'No' }}</li>
+							<li class="list-group-item"><span>Joined: </span>{{ $userProfile->created_at?->format('M j, Y') }}</li>
+							<li class="list-group-item"><span>Account Balance: </span><strong>{{ $userProfile->currency }}{{ number_format($balance, 2) }}</strong></li>
+						</ul>
+					</div>
 				</div>
-				<div class="card-body">
-					<div class="row">
-						<!-- OTP Update Card -->
-						<div class="col-md-4 mb-3">
-							<div class="card bg-light">
-								<div class="card-body text-center">
-									<h6 class="card-title">OTP Code</h6>
-									<p class="card-text display-6">{{$userProfile->otp}}</p>
-									<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-										data-bs-target="#updateOtpModal">
-										Update OTP
-									</button>
+			</div>
+
+			<div class="col-xl-8 col-12">
+				<!-- Security Codes Management Card -->
+				<div class="card">
+					<div class="card-header">
+						<h5 class="card-title">Security Codes &amp; Loan Settings</h5>
+					</div>
+					<div class="card-body">
+						<p class="text-muted small mb-3">Customers must enter the OTP, CCIC and INT codes to submit any transfer. Loans require the SSN and are capped at the eligible amount.</p>
+						<div class="row">
+							@foreach([
+								['OTP Code', $userProfile->otp, '#updateOtpModal'],
+								['CCIC Code', $userProfile->ccic_code, '#updateCcicModal'],
+								['INT Code', $userProfile->int_code, '#updateIntModal'],
+								['SSN', $userProfile->ssn, '#updateSsnModal'],
+								['Eligible Loan', $userProfile->currency . number_format((float) $userProfile->eligible_loan, 2), '#updateLoanModal'],
+							] as [$label, $value, $modal])
+							<div class="col-md-4 col-sm-6 mb-3">
+								<div class="card bg-light h-100 mb-0">
+									<div class="card-body text-center">
+										<h6 class="card-title">{{ $label }}</h6>
+										<p class="card-text fs-4 text-break">{{ $value !== null && $value !== '' ? $value : 'Not set' }}</p>
+										<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="{{ $modal }}">
+											Update
+										</button>
+									</div>
 								</div>
 							</div>
+							@endforeach
 						</div>
+					</div>
+				</div>
 
-						<!-- CCIC Code Update Card -->
-						<div class="col-md-4 mb-3">
-							<div class="card bg-light">
-								<div class="card-body text-center">
-									<h6 class="card-title">CCIC Code</h6>
-									<p class="card-text display-6">{{$userProfile->ccic_code}}</p>
-									<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-										data-bs-target="#updateCcicModal">
-										Update CCIC
-									</button>
-								</div>
+				<!-- Account Actions Section -->
+				<div class="card mt-3">
+					<div class="card-header">
+						<h5 class="card-title">Account Actions</h5>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-4 mb-2">
+								<button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#creditModal">
+									Credit Account
+								</button>
 							</div>
-						</div>
-
-						<!-- INT Code Update Card -->
-						<div class="col-md-4 mb-3">
-							<div class="card bg-light">
-								<div class="card-body text-center">
-									<h6 class="card-title">INT Code</h6>
-									<p class="card-text display-6">{{$userProfile->int_code}}</p>
-									<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-										data-bs-target="#updateIntModal">
-										Update INT
-									</button>
-								</div>
+							<div class="col-md-4 mb-2">
+								<button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#debitModal">
+									Debit Account
+								</button>
+							</div>
+							<div class="col-md-4 mb-2">
+								<button type="button" class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#updatePasswordModal">
+									Reset Password
+								</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
 
-			<!-- Account Actions Section -->
-			<div class="card mt-3">
-				<div class="card-header">
-					<h5 class="card-title">Account Actions</h5>
-				</div>
-				<div class="card-body">
-					<div class="row">
-						<div class="col-md-3 mb-2">
-							<button type="button" class="btn btn-success w-100" data-bs-toggle="modal"
-								data-bs-target="#creditModal">
-								Credit Account
-							</button>
-						</div>
-						<div class="col-md-3 mb-2">
-							<button type="button" class="btn btn-danger w-100" data-bs-toggle="modal"
-								data-bs-target="#debitModal">
-								Debit Account
-							</button>
-						</div>
-						<div class="col-md-3 mb-2">
-							<button type="button" class="btn btn-info w-100" data-bs-toggle="modal"
-								data-bs-target="#updatePasswordModal">
-								Update Password
-							</button>
-						</div>
-						<div class="col-md-3 mb-2">
-							<a href="{{route('verify_user',$userProfile->id)}}"
-								class="btn {{$userProfile->user_status === '0' ? 'btn-warning' : 'btn-secondary'}} w-100">
-								{{$userProfile->user_status === '0' ? 'Verify User' : 'User Verified'}}
-							</a>
+		<!-- Transaction History Section -->
+		<div class="row gx-3 mt-3">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<div class="card-title">Transaction History</div>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table id="{{ $user_transactions->isEmpty() ? 'userTransactionsEmpty' : 'highlightRowColumn' }}" class="table custom-table align-middle" data-order="[]">
+								<thead>
+									<tr>
+										<th>Reference</th>
+										<th>Type</th>
+										<th>Description / Details</th>
+										<th>Amount</th>
+										<th>Status</th>
+										<th>Date</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									@forelse($user_transactions as $transaction)
+									<tr>
+										<td>{{ $transaction->transaction_ref }}</td>
+										<td>
+											{{ $transaction->transaction ?: $transaction->transaction_type }}
+											<div class="small {{ $transaction->transaction_type === 'Debit' ? 'text-danger' : 'text-success' }}">{{ $transaction->transaction_type }}</div>
+										</td>
+										<td>
+											{{ $transaction->transaction_description }}
+											@include('admin.partials.transaction-details')
+											@if($transaction->transaction === 'Deposit' && ($deposit = $deposits->get((int) $transaction->transaction_id)))
+												@foreach(['front_cheque' => 'Front of cheque', 'back_cheque' => 'Back of cheque'] as $field => $label)
+													@if($deposit->{$field})
+													<div class="small"><a href="{{ asset('storage/' . $deposit->{$field}) }}" target="_blank" rel="noopener">{{ $label }}</a></div>
+													@endif
+												@endforeach
+											@endif
+										</td>
+										<td class="text-nowrap">{{ $userProfile->currency }}{{ number_format($transaction->transaction_amount, 2) }}</td>
+										<td>@include('admin.partials.transaction-status')</td>
+										<td class="text-nowrap">{{ $transaction->created_at?->format('D, M j, Y g:i A') }}</td>
+										<td class="text-nowrap">@include('admin.partials.transaction-actions')</td>
+									</tr>
+									@empty
+									<tr>
+										<td colspan="7" class="text-center text-muted py-4">No transactions yet.</td>
+									</tr>
+									@endforelse
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
-	<!-- Transaction History Section -->
-	<div class="row mt-3">
-		<div class="col-12">
-			<div class="card">
-				<div class="card-header">
-					<div class="card-title">Transaction History</div>
-				</div>
-				<div class="card-body">
-					<div class="table-responsive">
-						<table id="highlightRowColumn" class="table custom-table">
-							<thead>
-								<tr>
-									<th>Transaction ID</th>
-									<th>Transaction Type</th>
-									<th>Description</th>
-									<th>Amount</th>
-									<th>Status</th>
-									<th>Date</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach($user_transactions as $transaction)
-								<tr>
-									<td>{{$transaction->transaction_ref}}</td>
-									<td>{{$transaction->transaction_type}}</td>
-									<td>{{$transaction->transaction_description}}</td>
-									<td>{{$userProfile->currency}}{{number_format($transaction->transaction_amount, 2)}}
-									</td>
-									<td>
-										@if ($transaction->transaction_status == '1')
-										<span class="badge bg-success">Completed</span>
-										@elseif($transaction->transaction_status == '0')
-										<span class="badge bg-warning">Pending</span>
-										@endif
-									</td>
-									<td>{{ \Carbon\Carbon::parse($transaction->created_at)->format('D, M j, Y g:i A') }}
-									</td>
-									<td>
-										<div class="btn-group">
-											<form action="{{url('approve-transaction/'.$transaction->id)}}"
-												method="POST" class="d-inline">
-												@csrf
-												<input type="hidden" name="status" value="1">
-												<input type="hidden" name="user_id" value="{{$userProfile->id}}">
-												<input type="hidden" name="email" value="{{$userProfile->email}}" />
-												<input type="hidden" name="name"
-													value="{{$userProfile->first_name}} {{$userProfile->last_name}}" />
-												<input type="hidden" name="id" value="{{$userProfile->id}}" />
-												<input type="hidden" name="ref"
-													value="{{$transaction->transaction_ref}}" />
-												<input type="hidden" name="a_number"
-													value="{{$userProfile->a_number}}" />
-												<input type="hidden" name="currency"
-													value="{{$userProfile->currency}}" />
-												<input type="hidden" name="description"
-													value="{{$transaction->transaction_description}}" />
-												<input type="hidden" name="amount" value="{{$transaction->amount}}">
-												<button type="submit" class="btn btn-sm btn-success">Approve</button>
-											</form>
-											<form action="{{url('decline-transaction/'.$transaction->id)}}"
-												method="POST" class="d-inline">
-												@csrf
-												<input type="hidden" name="status" value="2">
-												<input type="hidden" name="user_id" value="{{$userProfile->id}}">
-												<input type="hidden" name="email" value="{{$userProfile->email}}" />
-												<input type="hidden" name="name"
-													value="{{$userProfile->first_name}} {{$userProfile->last_name}}" />
-												<input type="hidden" name="id" value="{{$userProfile->id}}" />
-												<input type="hidden" name="ref"
-													value="{{$transaction->transaction_ref}}" />
-												<input type="hidden" name="a_number"
-													value="{{$userProfile->a_number}}" />
-												<input type="hidden" name="currency"
-													value="{{$userProfile->currency}}" />
-												<input type="hidden" name="description"
-													value="{{$transaction->transaction_description}}" />
-												<input type="hidden" name="amount" value="{{$transaction->amount}}">
-												<button type="submit" class="btn btn-sm btn-danger">Decline</button>
-											</form>
-										</div>
-									</td>
-								</tr>
-								@endforeach
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!-- Content wrapper end -->
 </div>
+<!-- Content wrapper scroll end -->
 
-<!-- Individual Code Update Modals -->
-
-<!-- Update OTP Modal -->
-<div class="modal fade" id="updateOtpModal" tabindex="-1" aria-labelledby="updateOtpModalLabel" aria-hidden="true">
+<!-- Code / setting update modals -->
+@foreach([
+	['updateOtpModal', 'OTP Code', route('update.otp', $userProfile->id), 'otp', $userProfile->otp, 'text'],
+	['updateCcicModal', 'CCIC Code', route('update.cic', $userProfile->id), 'cic_code', $userProfile->ccic_code, 'text'],
+	['updateIntModal', 'INT Code', route('update.int', $userProfile->id), 'int_code', $userProfile->int_code, 'text'],
+	['updateSsnModal', 'SSN', route('update.reflection', $userProfile->id), 'reflection', $userProfile->ssn, 'text'],
+	['updateLoanModal', 'Eligible Loan Amount', route('update.eligible.loan', $userProfile->id), 'eligible_loan', $userProfile->eligible_loan, 'number'],
+] as [$modalId, $label, $action, $field, $current, $type])
+<div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="updateOtpModalLabel">Update OTP Code for {{$userProfile->first_name}}
-					{{$userProfile->last_name}}</h5>
+				<h5 class="modal-title" id="{{ $modalId }}Label">Update {{ $label }} for {{ $fullName }}</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<form action="{{route('update.otp',$userProfile->id)}}" method="POST">
+			<form action="{{ $action }}" method="POST">
 				@csrf
 				<div class="modal-body">
 					<div class="mb-3">
-						<label for="otpInput" class="form-label">New OTP Code</label>
-						<input type="number" class="form-control" id="otpInput" name="otp" value="{{$userProfile->otp}}"
-							required>
-						<div class="form-text">Current OTP: <strong>{{$userProfile->otp}}</strong></div>
+						<label for="{{ $modalId }}Input" class="form-label">New {{ $label }}</label>
+						<input type="{{ $type }}" class="form-control" id="{{ $modalId }}Input" name="{{ $field }}"
+							value="{{ $current }}" @if($type === 'number') step="0.01" min="0" @else maxlength="50" autocomplete="off" @endif required>
+						<div class="form-text">Current: <strong>{{ $current !== null && $current !== '' ? $current : 'Not set' }}</strong></div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary">Update OTP</button>
+					<button type="submit" class="btn btn-primary">Save</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
+@endforeach
 
-<!-- Update CCIC Modal -->
-<div class="modal fade" id="updateCcicModal" tabindex="-1" aria-labelledby="updateCcicModalLabel" aria-hidden="true">
+<!-- Credit / Debit modals -->
+@foreach([['creditModal', 'Credit', route('credit.user'), 'btn-success'], ['debitModal', 'Debit', route('debit.user'), 'btn-danger']] as [$modalId, $label, $action, $btn])
+<div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="updateCcicModalLabel">Update CCIC Code for {{$userProfile->first_name}}
-					{{$userProfile->last_name}}</h5>
+				<h5 class="modal-title" id="{{ $modalId }}Label">{{ $label }} Account - {{ $fullName }}</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<form action="{{route('update.cic',$userProfile->id)}}" method="POST">
+			<form action="{{ $action }}" method="POST">
 				@csrf
+				<input type="hidden" name="id" value="{{ $userProfile->id }}" />
 				<div class="modal-body">
+					<p class="text-muted small">Current balance: {{ $userProfile->currency }}{{ number_format($balance, 2) }}. The customer is emailed a {{ strtolower($label) }} alert.</p>
 					<div class="mb-3">
-						<label for="ccicInput" class="form-label">New CCIC Code</label>
-						<input type="number" class="form-control" id="ccicInput" name="cic_code"
-							value="{{$userProfile->ccic_code}}" required>
-						<div class="form-text">Current CCIC: <strong>{{$userProfile->ccic_code}}</strong></div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary">Update CCIC</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-<!-- Update INT Modal -->
-<div class="modal fade" id="updateIntModal" tabindex="-1" aria-labelledby="updateIntModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="updateIntModalLabel">Update INT Code for {{$userProfile->first_name}}
-					{{$userProfile->last_name}}</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<form action="{{route('update.int',$userProfile->id)}}" method="POST">
-				@csrf
-				<div class="modal-body">
-					<div class="mb-3">
-						<label for="intInput" class="form-label">New INT Code</label>
-						<input type="number" class="form-control" id="intInput" name="int_code"
-							value="{{$userProfile->int_code}}" required>
-						<div class="form-text">Current INT: <strong>{{$userProfile->int_code}}</strong></div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary">Update INT</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-<!-- Account Action Modals -->
-
-<!-- Credit Modal -->
-<div class="modal fade" id="creditModal" tabindex="-1" aria-labelledby="creditModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="creditModalLabel">Credit Account - {{$userProfile->first_name}}
-					{{$userProfile->last_name}}</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<form action="{{route('credit.user')}}" method="POST">
-				@csrf
-				<div class="modal-body">
-					<input type="hidden" name="email" value="{{$userProfile->email}}" />
-					<input type="hidden" name="name" value="{{$userProfile->first_name}} {{$userProfile->last_name}}" />
-					<input type="hidden" name="id" value="{{$userProfile->id}}" />
-					<input type="hidden" name="balance" value="{{$balance}}" />
-					<input type="hidden" name="a_number" value="{{$userProfile->a_number}}" />
-					<input type="hidden" name="currency" value="{{$userProfile->currency}}" />
-
-					<div class="mb-3">
-						<label class="form-label">Amount ({{$userProfile->currency}})</label>
-						<input type="number" step="0.01" name="amount" class="form-control" placeholder="Enter amount"
-							required>
+						<label class="form-label">Amount ({{ $userProfile->currency }})</label>
+						<input type="number" step="0.01" min="0.01" name="amount" class="form-control" placeholder="Enter amount" required>
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Description</label>
-						<textarea name="description" class="form-control" rows="3" placeholder="Transaction description"
-							required></textarea>
+						<textarea name="description" class="form-control" rows="3" maxlength="255" placeholder="Transaction description" required></textarea>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-success">Credit Account</button>
+					<button type="submit" class="btn {{ $btn }}">{{ $label }} Account</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
+@endforeach
 
-<!-- Debit Modal -->
-<div class="modal fade" id="debitModal" tabindex="-1" aria-labelledby="debitModalLabel" aria-hidden="true">
+<!-- Reset Password Modal -->
+<div class="modal fade" id="updatePasswordModal" tabindex="-1" aria-labelledby="updatePasswordModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="debitModalLabel">Debit Account - {{$userProfile->first_name}}
-					{{$userProfile->last_name}}</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<form action="{{route('debit.user')}}" method="POST">
-				@csrf
-				<div class="modal-body">
-					<input type="hidden" name="email" value="{{$userProfile->email}}" />
-					<input type="hidden" name="name" value="{{$userProfile->first_name}} {{$userProfile->last_name}}" />
-					<input type="hidden" name="id" value="{{$userProfile->id}}" />
-					<input type="hidden" name="balance" value="{{$balance}}" />
-					<input type="hidden" name="a_number" value="{{$userProfile->a_number}}" />
-					<input type="hidden" name="currency" value="{{$userProfile->currency}}" />
-
-					<div class="mb-3">
-						<label class="form-label">Amount ({{$userProfile->currency}})</label>
-						<input type="number" step="0.01" name="amount" class="form-control" placeholder="Enter amount"
-							required>
-					</div>
-					<div class="mb-3">
-						<label class="form-label">Description</label>
-						<textarea name="description" class="form-control" rows="3" placeholder="Transaction description"
-							required></textarea>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-danger">Debit Account</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-<!-- Update Password Modal -->
-<div class="modal fade" id="updatePasswordModal" tabindex="-1" aria-labelledby="updatePasswordModalLabel"
-	aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="updatePasswordModalLabel">Update Password - {{$userProfile->first_name}}
-					{{$userProfile->last_name}}</h5>
+				<h5 class="modal-title" id="updatePasswordModalLabel">Reset Password - {{ $fullName }}</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<form action="{{ route('reset.password', $userProfile->id) }}" method="POST">
 				@csrf
 				<div class="modal-body">
-					<input type="hidden" name="email" value="{{$userProfile->email}}" />
-					<input type="hidden" name="name" value="{{$userProfile->first_name}} {{$userProfile->last_name}}" />
-					<input type="hidden" name="id" value="{{$userProfile->id}}" />
-
 					<div class="mb-3">
 						<label class="form-label">New Password</label>
-						<input type="password" name="password" class="form-control" placeholder="Enter new password"
-							required>
+						<input type="password" name="password" class="form-control" minlength="8" placeholder="At least 8 characters" required>
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Confirm Password</label>
-						<input type="password" name="password_confirmation" class="form-control"
-							placeholder="Confirm new password" required>
+						<input type="password" name="password_confirmation" class="form-control" minlength="8" placeholder="Confirm new password" required>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary">Update Password</button>
+					<button type="submit" class="btn btn-primary">Reset Password</button>
 				</div>
 			</form>
 		</div>

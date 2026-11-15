@@ -1,25 +1,26 @@
 <?php
 
 namespace App\Http\Middleware;
-use Illuminate\Support\Facades\Auth;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserAuthorization
 {
-    /** 
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+    /**
+     * Require a logged-in user. JSON callers get a 401 instead of a redirect.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!Auth::check())
-        {
-            return redirect("login");
-        }   
+        if (! Auth::check()) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Your session has expired. Please log in again.'], 401);
+            }
+
+            return redirect()->route('login');
+        }
 
         return $next($request);
     }

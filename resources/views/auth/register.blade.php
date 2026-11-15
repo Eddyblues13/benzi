@@ -8,7 +8,7 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
 
     <!-- Bootstrap Css -->
     <link href="{{asset('assets/css/bootstrap.min.css')}}" id="bootstrap-style" rel="stylesheet" type="text/css" />
@@ -17,6 +17,8 @@
     <!-- App Css-->
     <link href="{{asset('assets/css/app.min.css')}}" id="app-style" rel="stylesheet" type="text/css" />
 </head>
+
+<body>
 <div class="account-pages my-5 pt-sm-5">
     <div class="container">
         <div class="row justify-content-center">
@@ -27,11 +29,11 @@
                             <div class="col-7">
                                 <div class="text-primary p-4">
                                     <h5 class="text-primary">Free Register</h5>
-                                    <p>Get your free Linit Waveaccount now.</p>
+                                    <p>Get your free Benzipaid account now.</p>
                                 </div>
                             </div>
                             <div class="col-5 align-self-end">
-                                <img src="assets/images/profile-img.png" alt="" class="img-fluid">
+                                <img src="{{ asset('assets/images/profile-img.png') }}" alt="" class="img-fluid">
                             </div>
                         </div>
                     </div>
@@ -40,7 +42,7 @@
                             <a>
                                 <div class="avatar-md profile-user-wid mb-4">
                                     <span class="avatar-title rounded-circle bg-light">
-                                        <img src="assets/images/logo.svg" alt="" class="rounded-circle" height="34">
+                                        <img src="{{ asset('assets/images/logo.svg') }}" alt="" class="rounded-circle" height="34">
                                     </span>
                                 </div>
                             </a>
@@ -52,8 +54,8 @@
 
                                 <div class="mb-3">
                                     <label for="username" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="fullname" name="first_name"
-                                        placeholder="Enter First Name">
+                                    <input type="text" class="form-control" id="first_name" name="first_name"
+                                        placeholder="Enter First Name" value="{{ old('first_name') }}" required>
                                     @if ($errors->has('first_name'))
                                     <span class="text-danger">{{ $errors->first('first_name') }}</span>
                                     @endif
@@ -61,8 +63,8 @@
 
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="fullname" name="last_name"
-                                        placeholder="Enter Last Name">
+                                    <input type="text" class="form-control" id="last_name" name="last_name"
+                                        placeholder="Enter Last Name" value="{{ old('last_name') }}" required>
                                     @if ($errors->has('last_name'))
                                     <span class="text-danger">{{ $errors->first('last_name') }}</span>
                                     @endif
@@ -70,8 +72,8 @@
 
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Email</label>
-                                    <input type="text" class="form-control" id="email" name="email"
-                                        placeholder="Enter email">
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="Enter email" value="{{ old('email') }}" required>
                                     @if ($errors->has('email'))
                                     <span class="text-danger">{{ $errors->first('email') }}</span>
                                     @endif
@@ -80,19 +82,25 @@
                                 <div class="mb-3">
                                     <label for="useremail" class="form-label">Address</label>
                                     <input type="text" class="form-control" id="address" name="address"
-                                        placeholder="Enter Address" required>
+                                        placeholder="Enter Address" value="{{ old('address') }}" required>
                                     <div class="invalid-feedback">
                                         Please Enter Address
                                     </div>
+                                    @error('address')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="useremail" class="form-label">Mobile Number</label>
                                     <input type="tel" class="form-control" id="phone" name="phone"
-                                        placeholder="Enter mobile Number" required>
+                                        placeholder="Enter mobile Number" value="{{ old('phone') }}" required>
                                     <div class="invalid-feedback">
                                         Please Enter mobile Number
                                     </div>
+                                    @error('phone')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="md-3">
@@ -371,25 +379,31 @@
                                         </select>
                                         <label for="floatingSelectGrid">Country</label>
                                     </div>
+                                    @error('country')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-floating mb-2">
-                                        <select class="form-select" id="acc_type" name="account_type"
+                                        <select class="form-select" id="account_type" name="account_type"
                                             aria-label="Floating label select example" required>
-                                            <option selected>select</option>
+                                            <option value="">select</option>
                                             <option value="Savings">Savings</option>
                                             <option value="Checking">Checking</option>
                                         </select>
                                         <label for="floatingSelectGrid">Account Type</label>
                                     </div>
+                                    @error('account_type')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-floating mb-2">
                                         <select class="form-select" id="currency" name="currency"
-                                            aria-label="Floating label select example" required>
-                                            <option>select</option>
+                                            aria-label="Floating label select example">
+                                            <option value="">select</option>
                                             <option value='Afghanistan'>Afghanistan (؋)</option>
                                             <option value='Albania'>Albania (Lek)</option>
                                             <option value='Algeria'>Algeria (دج)</option>
@@ -659,6 +673,9 @@
                                         </select>
                                         <label for="floatingSelectGrid">Account Currency</label>
                                     </div>
+                                    @error('currency')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="mb-3">
@@ -690,8 +707,7 @@
 
 
                                 <div class="mt-4 d-grid">
-                                    <button class="btn btn-primary waves-effect waves-light" onclick='create(this)'
-                                        type="submit" id="div">Register</button>
+                                    <button class="btn btn-primary waves-effect waves-light" type="submit" id="div">Register</button>
                                 </div><br>
                                 <p class="response"></p>
 
@@ -707,7 +723,7 @@
                 <div class="mt-5 text-center">
 
                     <div>
-                        <p>Already have an account ? <a href="login" class="fw-medium text-primary"> Login</a> </p>
+                        <p>Already have an account ? <a href="{{ route('login') }}" class="fw-medium text-primary"> Login</a> </p>
                         <p>©
                             <script>
                                 document.write(new Date().getFullYear())
@@ -723,11 +739,10 @@
 </div>
 
 
-<script src="assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
 <div class="position-fixed top-0 end-0 p-2" style="z-index: 1005">
     <div id="ErrorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-            <img src="https://globaltb.online/user/logo.png" alt="" class="me-2" height="18">
+            <img src="{{ asset('asset/img/logo.png') }}" alt="" class="me-2" height="18">
             <strong class="me-auto">Error</strong>
             <small>Now..</small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -738,89 +753,59 @@
     </div>
 </div>
 <!-- JAVASCRIPT -->
-<script src="assets/libs/jquery/jquery.min.js"></script>
-<script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/libs/metismenu/metisMenu.min.js"></script>
-<script src="assets/libs/simplebar/simplebar.min.js"></script>
-<script src="assets/libs/node-waves/waves.min.js"></script>
+<script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
+<script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
+<script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
 
 <!-- validation init -->
-<script src="assets/js/pages/validation.init.js"></script>
+<script src="{{ asset('assets/js/pages/validation.init.js') }}"></script>
 
 <!-- App js -->
-<script src="assets/js/app.js"></script>
+<script src="{{ asset('assets/js/app.js') }}"></script>
 <!-- Bootstrap Toasts Js -->
-<script src="assets/js/pages/bootstrap-toastr.init.js"></script>
+<script src="{{ asset('assets/js/pages/bootstrap-toastr.init.js') }}"></script>
 
+<script>
+    // Restore select values after a failed submit.
+    (function() {
+        var old = @json(['country' => old('country'), 'account_type' => old('account_type'), 'currency' => old('currency')]);
+        Object.keys(old).forEach(function(id) {
+            if (old[id]) { document.getElementById(id).value = old[id]; }
+        });
+    })();
+
+    // Light client-side checks; the server validates everything again.
+    document.getElementById('regester').addEventListener('submit', function(e) {
+        var password = document.getElementById('password').value;
+        var confirmation = document.getElementById('password2').value;
+        var message = '';
+
+        if (!document.getElementById('first_name').value || !document.getElementById('last_name').value ||
+            !document.getElementById('email').value || !password) {
+            message = 'Please fill in all required fields.';
+        } else if (!document.getElementById('account_type').value) {
+            message = 'Please select an account type.';
+        } else if (password.length < 8) {
+            message = 'Your password must be at least 8 characters.';
+        } else if (password !== confirmation) {
+            message = 'Passwords do not match. Check and try again.';
+        }
+
+        if (message) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            $(".toast-body").html(message);
+            $("#ErrorToast").toast("show");
+            return false;
+        }
+
+        var button = document.getElementById('div');
+        button.disabled = true;
+        button.innerHTML = 'Submitting request...';
+    });
+</script>
 </body>
 
 </html>
-
-<script>
-    function create(id) {
-        id.innerHTML = "submitting request...";
-        $("#div").fadeOut(1000);
-        setTimeout(function() {
-            $('#div').show();
-            id.innerHTML = "Register";
-        }, 2000);
-    }
-</script>
-
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    $(document).ready(function() {
-        $('#regester').on('submit', function(e) {
-            e.preventDefault();
-
-            var fullname = $('#fullname').val();
-            var email = $('#email').val();
-
-            var password = $('#password').val();
-    
-
-
-            if (fullname == "" || email == "" password == "") {
-                $(".toast-body").html('Enter all field');
-                $("#ErrorToast").toast("show");
-                return false;
-            }
-
-            if (password.length < 5 || password2.length < 5) {
-                $(".toast-body").html('Enter A Stronger Password !');
-                $("#ErrorToast").toast("show");
-                $("#password, $password2").val('');
-                return false;
-            }
-
-
-            if (password != password2) {
-                $(".toast-body").html('Password mismatched Check And Try Again!');
-                $("#ErrorToast").toast("show");
-                $("#pin_two").val('');
-                return false;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('register.custom') }}",
-                data: $(this).serialize(),
-                dataType: "json",
-                success: function(data) {
-                    $(".response").html(data.content);
-                    if (data.content == 'successful') {
-                        $(".response").html(data.content);
-                        window.location = data.redirect;
-                    } else
-                    if (data.content == 'Error') {
-                        $(".response").html(data.content);
-                    }
-                },
-                error: function(data, errorThrown) {
-                    Swal.fire('The Internet?', 'Check network connection!', 'question');
-                }
-            });
-
-        });
-    });
-</script>
