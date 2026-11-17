@@ -3,7 +3,7 @@
         ***********************************-->
 <div class="footer">
     <div class="copyright">
-        <p>Copyright © Benzipaid {{ date('Y') }}</p>
+        <p>Copyright © Limpopay {{ date('Y') }}</p>
     </div>
 </div>
 <!--**********************************

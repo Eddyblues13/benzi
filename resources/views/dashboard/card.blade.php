@@ -25,7 +25,7 @@
             <div class="col-xl-4 col-md-6 mb-4">
                 <div class="virtual-card">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <strong>Benzipaid</strong>
+                        <strong>Limpopay</strong>
                         <i class="fa fa-cc-visa fa-2x"></i>
                     </div>
                     <div class="card-number mb-4">{{ implode(' ', str_split($card->card_number, 4)) }}</div>

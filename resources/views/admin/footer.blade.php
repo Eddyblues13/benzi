@@ -1,7 +1,7 @@
 
         <!-- App Footer start -->
         <div class="app-footer">
-          <span>© Benzipaid {{ date('Y') }}</span>
+          <span>© Limpopay {{ date('Y') }}</span>
         </div>
         <!-- App footer end -->
 

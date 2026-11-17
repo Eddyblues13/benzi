@@ -19,7 +19,7 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        $email = env('ADMIN_EMAIL') ?: 'admin@benzipaid.test';
+        $email = env('ADMIN_EMAIL') ?: 'admin@Limpopay.test';
 
         if (User::where('email', $email)->exists()) {
             $this->command?->info("Admin account {$email} already exists; leaving it unchanged.");

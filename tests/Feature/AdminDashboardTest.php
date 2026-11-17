@@ -166,7 +166,7 @@ class AdminDashboardTest extends TestCase
 
     public function test_seeder_creates_an_admin_that_can_log_in(): void
     {
-        putenv('ADMIN_EMAIL=owner@benzipaid.test');
+        putenv('ADMIN_EMAIL=owner@Limpopay.test');
         putenv('ADMIN_PASSWORD=seeded-pass-123');
 
         try {
@@ -176,10 +176,10 @@ class AdminDashboardTest extends TestCase
             putenv('ADMIN_PASSWORD');
         }
 
-        $seeded = User::where('email', 'owner@benzipaid.test')->firstOrFail();
+        $seeded = User::where('email', 'owner@Limpopay.test')->firstOrFail();
         $this->assertTrue($seeded->isAdmin());
 
-        $this->post('/login', ['email' => 'owner@benzipaid.test', 'password' => 'seeded-pass-123'])->assertRedirect('/dashboard');
+        $this->post('/login', ['email' => 'owner@Limpopay.test', 'password' => 'seeded-pass-123'])->assertRedirect('/dashboard');
         $this->get('/dashboard')->assertViewIs('admin.home');
     }
 

@@ -7,8 +7,8 @@
           <!-- Sidebar brand starts -->
           <div class="brand">
             <a href="{{ route('dashboard') }}" class="logo">
-              <img src="{{ asset('asset/img/logo.png') }}" class="d-none d-md-block me-4" alt="Benzipaid" style="max-height: 48px;" />
-              <img src="{{ asset('asset/img/logo.png') }}" class="d-block d-md-none me-4" alt="Benzipaid" style="max-height: 40px;" />
+              <img src="{{ asset('asset/img/logo.png') }}" class="d-none d-md-block me-4" alt="Limpopay" style="max-height: 48px;" />
+              <img src="{{ asset('asset/img/logo.png') }}" class="d-block d-md-none me-4" alt="Limpopay" style="max-height: 40px;" />
             </a>
           </div>
           <!-- Sidebar brand ends -->

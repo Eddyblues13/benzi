@@ -200,7 +200,7 @@ class CustomerDashboardTest extends TestCase
     public function test_rate_limits_are_per_action_not_shared(): void
     {
         Mail::fake();
-        config(['app.admin_email' => 'support@benzipaid.test']);
+        config(['app.admin_email' => 'support@Limpopay.test']);
         $user = $this->customer(1000);
 
         // Several complete transfers (3 code checks + 1 submit each) must not
@@ -318,11 +318,11 @@ class CustomerDashboardTest extends TestCase
     public function test_support_ticket_is_emailed_to_admin(): void
     {
         Mail::fake();
-        config(['app.admin_email' => 'support@benzipaid.test']);
+        config(['app.admin_email' => 'support@Limpopay.test']);
         $user = $this->customer();
 
         $this->actingAs($user)->post('/ticket', ['subject' => 'Help', 'message' => 'My card'])->assertSessionHas('status');
 
-        Mail::assertSent(SupportEmail::class, fn ($mail) => $mail->hasTo('support@benzipaid.test') && $mail->data['subject'] === 'Help');
+        Mail::assertSent(SupportEmail::class, fn ($mail) => $mail->hasTo('support@Limpopay.test') && $mail->data['subject'] === 'Help');
     }
 }

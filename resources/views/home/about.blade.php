@@ -138,7 +138,7 @@
                         <div class="content-title style1 ">
                             <span>Online Shopping</span>
                             <h2>Shop Online Make In Online Banking Payments</h2>
-                            <p>Benzipaid leads the pack when it comes to Banking. Whether you’re a skilled or
+                            <p>Limpopay leads the pack when it comes to Banking. Whether you’re a skilled or
                                 completely new to online banking, our platforms give you the tools needed to take
                                 advantage of the foreign exchange market’s volatility.</p>
                         </div>
@@ -199,7 +199,7 @@
                         <div class="content-title style1">
                             <span>Goal Setting</span>
                             <h2>Manage Your Money With Online Banking Solution</h2>
-                            <p>With Benzipaid it’s simple to get started trading Forex, and it’s easy to get
+                            <p>With Limpopay it’s simple to get started trading Forex, and it’s easy to get
                                 the education needed to hone your skills. You’ll be able to benefit from one on one
                                 support from our specialist team and develop your expertise with our professional Forex
                                 trading resources and insights. For beginner and advanced traders alike we offer high

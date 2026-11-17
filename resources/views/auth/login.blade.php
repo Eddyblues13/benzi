@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Benzipaid| ACCOUNT</title>
+    <title>Limpopay| ACCOUNT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
@@ -30,7 +30,7 @@
                                 <div class="col-7">
                                     <div class="text-primary p-4">
                                         <h5 class="text-primary">Welcome Back !</h5>
-                                        <p>Sign in to continue to Benzipaid.</p>
+                                        <p>Sign in to continue to Limpopay.</p>
                                     </div>
                                 </div>
                                 <div class="col-5 align-self-end">
@@ -132,7 +132,7 @@
                                 <script>
                                     document.write(new Date().getFullYear())
                                 </script> Copyright
-                                <i class="bx bx-check-shield text-success"></i>Benzipaid
+                                <i class="bx bx-check-shield text-success"></i>Limpopay
                             </p>
                         </div>
                     </div>

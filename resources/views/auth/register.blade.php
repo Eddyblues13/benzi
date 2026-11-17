@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Benzipaid| ACCOUNT</title>
+    <title>Limpopay| ACCOUNT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
@@ -29,7 +29,7 @@
                             <div class="col-7">
                                 <div class="text-primary p-4">
                                     <h5 class="text-primary">Free Register</h5>
-                                    <p>Get your free Benzipaid account now.</p>
+                                    <p>Get your free Limpopay account now.</p>
                                 </div>
                             </div>
                             <div class="col-5 align-self-end">
@@ -712,7 +712,7 @@
                                 <p class="response"></p>
 
                                 <div class="mt-4 text-center">
-                                    <p class="mb-0">By registering you agree to the Benzipaid <a href="#"
+                                    <p class="mb-0">By registering you agree to the Limpopay <a href="#"
                                             class="text-primary">Terms of Use</a></p>
                                 </div>
                             </form>
@@ -728,7 +728,7 @@
                             <script>
                                 document.write(new Date().getFullYear())
                             </script> Copyright
-                            <i class="bx bx-check-shield text-success"></i>Benzipaid
+                            <i class="bx bx-check-shield text-success"></i>Limpopay
                         </p>
                     </div>
                 </div>

@@ -93,7 +93,7 @@
         <p> <i class="ri-copyright-line"></i>
             <script>
                 document.write(new Date().getFullYear())
-            </script> - Benzipaid. All Rights Reserved <a href="#" target="_blank"></a>
+            </script> - Limpopay. All Rights Reserved <a href="#" target="_blank"></a>
         </p>
     </div>
 </footer>

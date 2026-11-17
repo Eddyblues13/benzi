@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="asset/css/style.css">
     <link rel="stylesheet" href="asset/css/dark-theme.css">
     <link rel="stylesheet" href="asset/css/responsive.css">
-    <title>Benzipaid - Money Transfer & Banking</title>
+    <title>Limpopay - Money Transfer & Banking</title>
     <link rel="icon" type="image/png" href="asset/img/favicon.png">
 
     <!-- Smartsupp Live Chat script -->
@@ -55,9 +55,9 @@ window.smartsupp||(function(d) {
                         <div class="col-lg-8 col-md-12">
                             <div class="header-top-left">
                                 <ul class="contact-info list-style">
-                                    <!--<li><i class="flaticon-call"></i> <a href="https://Benzipaid.online">+34-917-45-6101</a></li>-->
+                                    <!--<li><i class="flaticon-call"></i> <a href="https://Limpopay.online">+34-917-45-6101</a></li>-->
                                     <li><i class="flaticon-email-1"></i> <a
-                                            href="support@benzipaid.online"><span>support@benzipaid.online</span></a>
+                                            href="support@Limpopay.online"><span>support@Limpopay.online</span></a>
                                     </li>
                                     <!--<li><i class="flaticon-pin"></i><p>St. Here Mandalay, New York, U.K</p></li>-->
                                 </ul>

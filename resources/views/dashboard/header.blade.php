@@ -5,15 +5,15 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="keywords" content="">
-    <meta name="author" content="Benzipaid">
+    <meta name="author" content="Limpopay">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Benzipaid">
-    <meta property="og:title" content="Benzipaid">
-    <meta property="og:description" content="Benzipaid">
+    <meta name="description" content="Limpopay">
+    <meta property="og:title" content="Limpopay">
+    <meta property="og:description" content="Limpopay">
     <meta property="og:image" content="{{ asset('user/images/favicon.png') }}">
     <meta name="format-detection" content="telephone=no">
-    <title>Benzipaid - Dashboard</title>
+    <title>Limpopay - Dashboard</title>
     <!-- Favicon icon -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('user/images/favicon.png') }}">
@@ -25,6 +25,18 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+<!-- Smartsupp Live Chat script -->
+<script type="text/javascript">
+var _smartsupp = _smartsupp || {};
+_smartsupp.key = 'e2409a138112b2f72879d3669d33154174d9e0be';
+window.smartsupp||(function(d) {
+  var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+  s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+  c.type='text/javascript';c.charset='utf-8';c.async=true;
+  c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+})(document);
+</script>
+<noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
 
 
 
